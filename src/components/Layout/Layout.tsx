@@ -13,6 +13,9 @@ import {
   SettingOutlined
 } from '@ant-design/icons'
 import { Breadcrumb, Layout as LayoutComponent, Menu, theme, MenuProps } from 'antd'
+import { useAppSelector, useAppDispatch } from '@/hooks/useReduxStore'
+import { setUsuarioAuth, setToken, clearUsuarioAuth } from '@/store/features/auth/authSlice'
+import { getProfile } from '@/services/authService'
 
 
 const { Header, Content, Footer, Sider } = LayoutComponent
@@ -46,8 +49,27 @@ const Layout = ({children, title, description=desc}: LayoutProps) => {
   const [collapsed, setCollapsed] = useState<LayoutState['collapsed']>(false)
   const router = useRouter()
   const [selectedKey, setSelectedKey] = useState<LayoutState['selectedKey']>('');
+  const dispatch = useAppDispatch()
+  const token = useAppSelector(state => state.auth.token)
 
   const { pathname } = router
+
+  useEffect(() => {
+    if(localStorage.getItem('token')) {
+      dispatch(setToken(localStorage.getItem('token') as string))
+      const getProfileData = async () => {
+        try {
+          const data = await getProfile()
+          dispatch(setUsuarioAuth(data))
+        } catch (error: any) {
+          console.log( error.response.data.message )
+        }
+      }
+      getProfileData()
+    } else {
+      dispatch(clearUsuarioAuth())
+    }
+  }, [dispatch, token])
 
   useEffect(() => {
     const path = pathname.split('/')[1]

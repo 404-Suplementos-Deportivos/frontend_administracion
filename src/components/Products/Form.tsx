@@ -1,9 +1,19 @@
 import { useRef } from 'react';
-import { Button, Form, Input, InputNumber, Select, Space } from 'antd';
+import { Button, Form, Input, InputNumber, Select, Space, message } from 'antd';
 import type { FormInstance } from 'antd/es/form';
+import { createProduct } from '@/services/productsService';
+import { Producto } from '@/interfaces/Producto';
+import { Categoria } from '@/interfaces/Categoria';
+import { Subategoria } from '@/interfaces/SubCategoria';
 
 const { Option } = Select;
 const { Search } = Input;
+
+interface FormCreateProps {
+  categorias: Categoria[]
+  subCategorias: Subategoria[]
+  setSelectedCategory: (id: number) => void
+}
 
 const layout = {
   labelCol: { span: 8 },
@@ -22,6 +32,7 @@ const validateMessages = {
   },
   number: {
     range: '${label} debe encontrarse entre ${min} y ${max}',
+    min: '${label} debe ser mayor o igual a ${min}',
   },
 };
 
@@ -32,21 +43,51 @@ const selectAfter = (
   </Select>
 )
 
-const FormCreate = () => {
+const FormCreate = ({categorias, subCategorias, setSelectedCategory}: FormCreateProps) => {
   const formRef = useRef<FormInstance>(null);
+  const [messageApi, contextHolder] = message.useMessage();
 
-  const onFinish = (values: any) => {
-    console.log(values);
+  const onFinish = async (values: any) => {
+    const producto: Producto = {
+      nombre: values.nombre,
+      descripcion: values.descripcion,
+      urlImagen: values.urlImagen,
+      precioLista: Number(values.precioLista),
+      idCategoria: Number(values.idCategoria),
+      idSubCategoria: Number(values.idSubcategoria),
+      stock: Number(values.stock),
+      stockMinimo: Number(values.stockMinimo)
+    }
+    try {
+      const data = await createProduct(producto);
+      messageApi.open({
+        content: data.message,
+        duration: 2,
+        type: 'success'
+      })
+      onReset();
+    } catch (error: any) {
+      console.log( error.response.data.message )
+      messageApi.open({
+        content: error.response.data.message,
+        duration: 2,
+        type: 'error'
+      })
+    }
   };
 
   const onReset = () => {
     formRef.current?.resetFields();
   };
 
+  const handleChange = (value: string) => {
+    setSelectedCategory(Number(value))
+  }
+
   // TODO: Agregar subida de imagenes a servidor
   return (
     <>
-      <h2 style={{marginTop: 0}}>Crear un Nuevo Producto</h2>
+      {contextHolder}
       <Form
         {...layout}
         ref={formRef}
@@ -65,7 +106,7 @@ const FormCreate = () => {
           <Input addonBefore="https://" addonAfter=".com" allowClear placeholder='Ej. "https://www.google.com.ar"' />
         </Form.Item>
         <Form.Item
-          name="categorias"
+          name="idCategoria"
           label="Categoría"
           rules={[{ required: true, message: 'Selecciona una categoría!' }]}
         >
@@ -74,40 +115,19 @@ const FormCreate = () => {
             allowClear
             placeholder="Busca una categoría"
             optionFilterProp="children"
-            filterOption={(input, option) => (option?.label ?? '').includes(input)}
+            filterOption={(input, option) => (option?.label.toLowerCase() ?? '').includes(input)}
             filterSort={(optionA, optionB) =>
               (optionA?.label ?? '').toLowerCase().localeCompare((optionB?.label ?? '').toLowerCase())
             }
-            options={[
-              {
-                value: '1',
-                label: 'Not Identified',
-              },
-              {
-                value: '2',
-                label: 'Closed',
-              },
-              {
-                value: '3',
-                label: 'Communicated',
-              },
-              {
-                value: '4',
-                label: 'Identified',
-              },
-              {
-                value: '5',
-                label: 'Resolved',
-              },
-              {
-                value: '6',
-                label: 'Cancelled',
-              },
-            ]}
+            options={categorias.map(categoria => ({
+              value: categoria.id,
+              label: categoria.nombre
+            }))}
+            onChange={handleChange}
           />
         </Form.Item>
         <Form.Item
-          name="subcategorias"
+          name="idSubcategoria"
           label="Sub-Categoría"
           rules={[{ required: true, message: 'Selecciona una sub-categoría!'}]}
         >
@@ -116,45 +136,23 @@ const FormCreate = () => {
             allowClear
             placeholder="Busca una sub-categoría"
             optionFilterProp="children"
-            filterOption={(input, option) => (option?.label ?? '').includes(input)}
+            filterOption={(input, option) => (option?.label.toLowerCase() ?? '').includes(input)}
             filterSort={(optionA, optionB) =>
               (optionA?.label ?? '').toLowerCase().localeCompare((optionB?.label ?? '').toLowerCase())
             }
-            options={[
-              {
-                value: '1',
-                label: 'Not Identified',
-              },
-              {
-                value: '2',
-                label: 'Closed',
-              },
-              {
-                value: '3',
-                label: 'Communicated',
-              },
-              {
-                value: '4',
-                label: 'Identified',
-              },
-              {
-                value: '5',
-                label: 'Resolved',
-              },
-              {
-                value: '6',
-                label: 'Cancelled',
-              },
-            ]}
+            options={subCategorias.map(subCategoria => ({
+              value: subCategoria.id,
+              label: subCategoria.nombre
+            }))}
           />
         </Form.Item>
-        <Form.Item name="precioLista" label="Precio de Lista" rules={[{ required: true, type: 'number', min: 0, max: 99 }]}>
-          <InputNumber addonBefore="$" addonAfter={selectAfter} placeholder='Ej. "2500"' />
+        <Form.Item name="precioLista" label="Precio de Lista" rules={[{ required: true, type: 'number', min: 0 }]}>
+          <InputNumber addonBefore="$" addonAfter={selectAfter} placeholder='Ej. "3500.50"' />
         </Form.Item>
-        <Form.Item name="stock" label="Stock Disponible" rules={[{ required: true, type: 'number', min: 0, max: 99 }]}>
+        <Form.Item name="stock" label="Stock Disponible" rules={[{ required: true, type: 'number', min: 0, max: 1000 }]}>
           <InputNumber placeholder='Ej. "25"' />
         </Form.Item>
-        <Form.Item name="stockMinimo" label="Stock Mínimo" rules={[{ required: true, type: 'number', min: 0, max: 99 }]}>
+        <Form.Item name="stockMinimo" label="Stock Mínimo" rules={[{ required: true, type: 'number', min: 0, max: 1000 }]}>
           <InputNumber  placeholder='Ej. "5"'/>
         </Form.Item>
         
