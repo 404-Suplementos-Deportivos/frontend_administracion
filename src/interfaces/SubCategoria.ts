@@ -1,4 +1,4 @@
-export interface Subategoria {
+export interface SubCategoria {
   id?: number
   nombre: string
   descripcion: string

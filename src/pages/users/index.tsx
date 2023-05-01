@@ -5,10 +5,10 @@ import type { ColumnsType, TablePaginationConfig } from 'antd/es/table';
 import type { FilterValue, SorterResult } from 'antd/es/table/interface';
 import { ArrowPathRoundedSquareIcon, PencilSquareIcon, TrashIcon } from '@heroicons/react/24/outline'
 import Layout from "@/components/Layout/Layout"
-import { getProducts } from "@/services/productsService"
-import { Producto } from "@/interfaces/Producto";
+import { getUsers } from "@/services/usersService";
+import { User } from "@/interfaces/User";
 
-const columns: ColumnsType<Producto> = [
+const columns: ColumnsType<User> = [
   {
     title: 'Código',
     dataIndex: 'id',
@@ -17,44 +17,34 @@ const columns: ColumnsType<Producto> = [
     width: '10%',
   },
   {
-    title: 'Nombre',
+    title: 'Nombre Completo',
     dataIndex: 'nombre',
-    render: (nombre) => nombre || '',    
+    render: (index, user) => `${user.apellido} ${user.nombre}` || '', 
     width: '20%',
   },
   {
-    title: 'Precio de Lista',
-    dataIndex: 'precioLista',
-    render: (precioLista) => `$${precioLista?.toString()}` || '-',
-    width: '20%',
-    // width: '10%',
-  },
-  {
-    title: 'Precio de Venta',
-    dataIndex: 'precioVenta',
-    render: (precioVenta) => `$${precioVenta?.toString()}` || '-',
+    title: 'Email',
+    dataIndex: 'email',
+    render: (email) => email || '',
     width: '20%',
   },
   {
-    title: 'Stock Minimo',
-    dataIndex: 'stockMinimo',
-    render: (stockMinimo) => stockMinimo?.toString() || '-',
+    title: 'Cuenta confirmada',
+    dataIndex: 'cuentaConfirmada',
+    render: (cuentaConfirmada) => cuentaConfirmada ? 'Si' : 'No',
     width: '10%',
   },
   {
-    title: 'Stock Actual',
-    dataIndex: 'stock',
-    render: (stock) => stock?.toString() || '-',
-    width: '10%',
+    title: 'Rol',
+    dataIndex: 'rol',
+    render: (rol) => rol.nombre || '',
+    width: '20%',
   },
   {
     title: 'Acciones',
     dataIndex: 'acciones',
     render: (acciones, record) => (
       <div>
-        <Button type="default" size="small" style={{padding: '0px'}}>
-          <ArrowPathRoundedSquareIcon style={{width: '24px', height: '24px'}} />
-        </Button>
         <Button type="default" size="small" style={{padding: '0px'}}>
           <PencilSquareIcon style={{width: '24px', height: '24px'}} />
         </Button>
@@ -63,22 +53,22 @@ const columns: ColumnsType<Producto> = [
         </Button>
       </div>
     ),
-    width: '10%',
+    width: '20%',
   }
 ];
 
-export default function ListProductos() {
+export default function Users() {
   const [messageApi, contextHolder] = message.useMessage();
-  const [productos, setProducts] = useState<Producto[]>();
+  const [users, setUsers] = useState<User[]>();
   const [filteredInfo, setFilteredInfo] = useState<Record<string, FilterValue | null>>({});
-  const [sortedInfo, setSortedInfo] = useState<SorterResult<Producto>>({});
+  const [sortedInfo, setSortedInfo] = useState<SorterResult<User>>({});
   const [lastExpandedRowId, setLastExpandedRowId] = useState<number | null | undefined>(null);
 
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const response = await getProducts()
-        setProducts(response)
+        const response = await getUsers()
+        setUsers(response)
       } catch (error: any) {
         messageApi.open({
           content: 'Error al obtener datos',
@@ -91,9 +81,9 @@ export default function ListProductos() {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
-  const handleChange: TableProps<Producto>['onChange'] = (pagination, filters, sorter) => {
+  const handleChange: TableProps<User>['onChange'] = (pagination, filters, sorter) => {
     setFilteredInfo(filters);
-    setSortedInfo(sorter as SorterResult<Producto>);
+    setSortedInfo(sorter as SorterResult<User>);
   };
 
   const pagination: TablePaginationConfig = {
@@ -104,26 +94,32 @@ export default function ListProductos() {
     showTotal: (total, range) => `${range[0]}-${range[1]} de ${total} registros`,
   };
 
-  const expandedRowRender = (record: Producto) => {
-    const columns: ColumnsType<Producto> = [
+  const expandedRowRender = (record: User) => {
+    const columns: ColumnsType<User> = [
       {
-        title: 'Categoría',
-        dataIndex: 'categoria',
-        render: (categoria) => categoria?.nombre || '',
-        width: '15%',
+        title: 'Dirección',
+        dataIndex: 'direccion',
+        render: (direccion) => direccion || '',
+        width: '25%',
       },
       {
-        title: 'Subcategoría',
-        dataIndex: 'subcategoria',
-        render: (subcategoria) => subcategoria?.nombre || '',
-        width: '15%',
+        title: 'Código Postal',
+        dataIndex: 'codigoPostal',
+        render: (codigoPostal) => codigoPostal || '',
+        width: '25%',
       },
       {
-        title: 'Descripción',
-        dataIndex: 'descripcion',
-        render: (descripcion) => descripcion || '',
-        width: '70%',
+        title: 'Teléfono',
+        dataIndex: 'telefono',
+        render: (telefono) => telefono || '',
+        width: '25%',
       },
+      {
+        title: 'Fecha de Nacimiento',
+        dataIndex: 'fechaNacimiento',
+        render: (fechaNacimiento) => fechaNacimiento || '',
+        width: '25%',
+      }
     ];
     return <Table columns={columns} dataSource={[record]} pagination={false} rowKey={'id'} />
   }
@@ -142,7 +138,7 @@ export default function ListProductos() {
         </div>
         <div>
           <div>Filtros</div>
-          <Table columns={columns} dataSource={productos} onChange={handleChange} pagination={pagination} rowKey={'id'} expandable={{ 
+          <Table columns={columns} dataSource={users} onChange={handleChange} pagination={pagination} rowKey={'id'} expandable={{ 
             expandedRowRender: expandedRowRender,
             onExpand: (expanded, record) => {
               if (expanded) {

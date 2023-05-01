@@ -41,7 +41,9 @@ enum ROUTES {
   PRODUCTOS = '/productos',
   PRODUCTOS_LIST = '/productos/list',
   PRODUCTOS_CREATE = '/productos/create',
-  USUARIOS = '/usuarios',
+  PRODUCTOS_CATEGORIES = '/productos/categories',
+  PRODUCTOS_GANANCIAS = '/productos/ganancias',
+  USUARIOS = '/users',
   LOGOUT = '/logout'
 }
 
@@ -117,10 +119,17 @@ const Layout = ({children, title, description=desc}: LayoutProps) => {
                 <Menu.Item key={ROUTES.PRODUCTOS_CREATE}>
                   <Link href={ROUTES.PRODUCTOS_CREATE}>Nuevo Producto</Link>
                 </Menu.Item>
+                <Menu.Item key={ROUTES.PRODUCTOS_CATEGORIES}>
+                  <Link href={ROUTES.PRODUCTOS_CATEGORIES}>Categorias</Link>
+                </Menu.Item>
+                <Menu.Item key={ROUTES.PRODUCTOS_GANANCIAS}>
+                  <Link href={ROUTES.PRODUCTOS_GANANCIAS}>Ganancias</Link>
+                </Menu.Item>
               </Menu.SubMenu>
-              <Menu.SubMenu key="usuarios" icon={<TeamOutlined />} title="Usuarios">
-                <Menu.Item key="11">Team 1</Menu.Item>
-                <Menu.Item key="12">Team 2</Menu.Item>
+              <Menu.SubMenu key={ROUTES.USUARIOS} icon={<TeamOutlined />} title="Usuarios">
+                <Menu.Item key={ROUTES.USUARIOS}>
+                  <Link href={ROUTES.USUARIOS}>Listado</Link>
+                </Menu.Item>
               </Menu.SubMenu>
               <Menu.Item key="logout" icon={<FileOutlined />}>
                 <Link href='/'>

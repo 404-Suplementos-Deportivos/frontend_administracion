@@ -3,12 +3,13 @@ import Link from "next/link"
 import { message, Button, Table, TableProps } from "antd"
 import type { ColumnsType, TablePaginationConfig } from 'antd/es/table';
 import type { FilterValue, SorterResult } from 'antd/es/table/interface';
-import { ArrowPathRoundedSquareIcon, PencilSquareIcon, TrashIcon } from '@heroicons/react/24/outline'
+import { ArrowPathRoundedSquareIcon, PencilSquareIcon, TrashIcon, PlusCircleIcon } from '@heroicons/react/24/outline'
 import Layout from "@/components/Layout/Layout"
-import { getProducts } from "@/services/productsService"
-import { Producto } from "@/interfaces/Producto";
+import { getCategories, getSubCategories } from "@/services/productsService"
+import { Categoria } from "@/interfaces/Categoria";
+import { SubCategoria } from "@/interfaces/SubCategoria";
 
-const columns: ColumnsType<Producto> = [
+const columns: ColumnsType<Categoria> = [
   {
     title: 'Código',
     dataIndex: 'id',
@@ -20,32 +21,14 @@ const columns: ColumnsType<Producto> = [
     title: 'Nombre',
     dataIndex: 'nombre',
     render: (nombre) => nombre || '',    
-    width: '20%',
+    width: '30%',
   },
   {
-    title: 'Precio de Lista',
-    dataIndex: 'precioLista',
-    render: (precioLista) => `$${precioLista?.toString()}` || '-',
-    width: '20%',
+    title: 'Descripción',
+    dataIndex: 'descripcion',
+    render: (descripcion) => descripcion || '',
+    width: '50%',
     // width: '10%',
-  },
-  {
-    title: 'Precio de Venta',
-    dataIndex: 'precioVenta',
-    render: (precioVenta) => `$${precioVenta?.toString()}` || '-',
-    width: '20%',
-  },
-  {
-    title: 'Stock Minimo',
-    dataIndex: 'stockMinimo',
-    render: (stockMinimo) => stockMinimo?.toString() || '-',
-    width: '10%',
-  },
-  {
-    title: 'Stock Actual',
-    dataIndex: 'stock',
-    render: (stock) => stock?.toString() || '-',
-    width: '10%',
   },
   {
     title: 'Acciones',
@@ -53,7 +36,7 @@ const columns: ColumnsType<Producto> = [
     render: (acciones, record) => (
       <div>
         <Button type="default" size="small" style={{padding: '0px'}}>
-          <ArrowPathRoundedSquareIcon style={{width: '24px', height: '24px'}} />
+          <PlusCircleIcon style={{width: '24px', height: '24px'}} />
         </Button>
         <Button type="default" size="small" style={{padding: '0px'}}>
           <PencilSquareIcon style={{width: '24px', height: '24px'}} />
@@ -67,18 +50,19 @@ const columns: ColumnsType<Producto> = [
   }
 ];
 
-export default function ListProductos() {
+export default function Categories() {
   const [messageApi, contextHolder] = message.useMessage();
-  const [productos, setProducts] = useState<Producto[]>();
+  const [categories, setCategories] = useState<Categoria[]>();
+  const [subcategories, setSubcategories] = useState<SubCategoria[]>();
   const [filteredInfo, setFilteredInfo] = useState<Record<string, FilterValue | null>>({});
-  const [sortedInfo, setSortedInfo] = useState<SorterResult<Producto>>({});
+  const [sortedInfo, setSortedInfo] = useState<SorterResult<Categoria>>({});
   const [lastExpandedRowId, setLastExpandedRowId] = useState<number | null | undefined>(null);
 
   useEffect(() => {
-    const fetchProducts = async () => {
+    const fetchCategories = async () => {
       try {
-        const response = await getProducts()
-        setProducts(response)
+        const responseCategories = await getCategories()
+        setCategories(responseCategories)
       } catch (error: any) {
         messageApi.open({
           content: 'Error al obtener datos',
@@ -87,13 +71,13 @@ export default function ListProductos() {
         })
       }
     }
-    fetchProducts()
+    fetchCategories()
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
-  const handleChange: TableProps<Producto>['onChange'] = (pagination, filters, sorter) => {
+  const handleChange: TableProps<Categoria>['onChange'] = (pagination, filters, sorter) => {
     setFilteredInfo(filters);
-    setSortedInfo(sorter as SorterResult<Producto>);
+    setSortedInfo(sorter as SorterResult<Categoria>);
   };
 
   const pagination: TablePaginationConfig = {
@@ -104,19 +88,13 @@ export default function ListProductos() {
     showTotal: (total, range) => `${range[0]}-${range[1]} de ${total} registros`,
   };
 
-  const expandedRowRender = (record: Producto) => {
-    const columns: ColumnsType<Producto> = [
-      {
-        title: 'Categoría',
-        dataIndex: 'categoria',
-        render: (categoria) => categoria?.nombre || '',
-        width: '15%',
-      },
+  const expandedRowRender = (record: Categoria) => {
+    const columnsSubcategories: ColumnsType<SubCategoria> = [
       {
         title: 'Subcategoría',
-        dataIndex: 'subcategoria',
-        render: (subcategoria) => subcategoria?.nombre || '',
-        width: '15%',
+        dataIndex: 'nombre',
+        render: (nombre) => nombre || '',
+        width: '20%',
       },
       {
         title: 'Descripción',
@@ -124,28 +102,40 @@ export default function ListProductos() {
         render: (descripcion) => descripcion || '',
         width: '70%',
       },
+      {
+        title: 'Acciones',
+        dataIndex: 'acciones',
+        render: (acciones, record) => (
+          <div>
+            <Button type="default" size="small" style={{padding: '0px'}}>
+              <PencilSquareIcon style={{width: '24px', height: '24px'}} />
+            </Button>
+            <Button type="default" size="small" style={{padding: '0px'}}>
+              <TrashIcon style={{width: '24px', height: '24px'}} />
+            </Button>
+          </div>
+        ),
+        width: '10%',
+      }
     ];
-    return <Table columns={columns} dataSource={[record]} pagination={false} rowKey={'id'} />
+    return <Table columns={columnsSubcategories} dataSource={subcategories} pagination={false} rowKey={'id'} />;
   }
-
   return (
     <Layout
-      title="Productos"
+      title="Categorias"
     >
-      {contextHolder}
-      <h2 style={{marginTop: 0}}>Productos</h2>
+      <h2 style={{marginTop: 0}}>Categorías</h2>
       <div style={{display: 'flex', flexDirection: 'column', width: '100%'}}>
         <div style={{display: 'flex', justifyContent: 'flex-end', marginBottom: '20px'}}>
-          <Link href='/productos/create'>
-            <Button type="primary">Crear Producto</Button>
-          </Link>
+          <Button type="primary">Crear Categoría</Button>
         </div>
         <div>
-          <div>Filtros</div>
-          <Table columns={columns} dataSource={productos} onChange={handleChange} pagination={pagination} rowKey={'id'} expandable={{ 
+          <Table columns={columns} dataSource={categories} onChange={handleChange} pagination={pagination} rowKey={'id'} expandable={{ 
             expandedRowRender: expandedRowRender,
-            onExpand: (expanded, record) => {
+            onExpand: async (expanded, record) => {
               if (expanded) {
+                const responseSubCategories = await getSubCategories(Number(record.id))
+                setSubcategories(responseSubCategories)
                 setLastExpandedRowId(record.id);
               } else {
                 setLastExpandedRowId(null);

@@ -1,14 +1,14 @@
 import axios from '@/libs/axios'
 import { Producto } from '@/interfaces/Producto'
 import { Categoria } from '@/interfaces/Categoria'
-import { Subategoria } from '@/interfaces/SubCategoria'
+import { SubCategoria } from '@/interfaces/SubCategoria'
 
 export const getCategories = async (): Promise<Categoria[]> => {
   const { data } = await axios.get('/products/categories')
   return data
 }
 
-export const getSubCategories = async (id: number): Promise<Subategoria[]> => {
+export const getSubCategories = async (id: number): Promise<SubCategoria[]> => {
   const { data } = await axios.get(`/products/subcategories/${id}`)
   return data
 }
@@ -25,5 +25,10 @@ export const getProduct = async (id: number): Promise<Producto> => {
 
 export const createProduct = async (product: Producto) => {
   const { data } = await axios.post('/products', product)
+  return data
+}
+
+export const getGanancias = async (): Promise<any> => {
+  const { data } = await axios.get('/products/profits')
   return data
 }
