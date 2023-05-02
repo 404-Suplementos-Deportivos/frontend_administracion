@@ -8,6 +8,21 @@ export const getCategories = async (): Promise<Categoria[]> => {
   return data
 }
 
+export const createCategory = async (category: Categoria) => {
+  const { data } = await axios.post('/products/categories', category)
+  return data
+}
+
+export const updateCategory = async (category: Categoria) => {
+  const { data } = await axios.put(`/products/categories/${category.id}`, {nombre: category.nombre, descripcion: category.descripcion})
+  return data
+}
+
+export const deleteCategory = async (id: number) => {
+  const { data } = await axios.delete(`/products/categories/${id}`)
+  return data
+}
+
 export const getSubCategories = async (id: number): Promise<SubCategoria[]> => {
   const { data } = await axios.get(`/products/subcategories/${id}`)
   return data
@@ -30,5 +45,10 @@ export const createProduct = async (product: Producto) => {
 
 export const getGanancias = async (): Promise<any> => {
   const { data } = await axios.get('/products/profits')
+  return data
+}
+
+export const createGanancia = async (ganancia: any) => {
+  const { data } = await axios.post('/products/profits', ganancia)
   return data
 }

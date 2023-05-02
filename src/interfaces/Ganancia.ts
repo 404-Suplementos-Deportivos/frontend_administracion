@@ -1,6 +1,6 @@
 export interface Ganancia {
-  id: number;
+  id?: number;
   vigencia: string;
   porcentaje: number;
-  idUsuario: number;
+  idUsuario?: number;
 }
