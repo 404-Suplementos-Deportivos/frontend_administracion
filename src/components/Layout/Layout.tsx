@@ -104,14 +104,12 @@ const Layout = ({children, title, description=desc}: LayoutProps) => {
                 </Link>
               </Menu.Item>
               <Menu.SubMenu key="compras" icon={<UserOutlined />} title="Compras">
-                <Menu.Item key="1">Tom</Menu.Item>
-                <Menu.Item key="2">Bill</Menu.Item>
-                <Menu.Item key="3">Alex</Menu.Item>
+                <Menu.Item key="1">Compras</Menu.Item>
+                <Menu.Item key="3">Proveedores</Menu.Item>
               </Menu.SubMenu>
               <Menu.SubMenu key="ventas" icon={<UserOutlined />} title="Ventas">
-                <Menu.Item key="5">Tom</Menu.Item>
-                <Menu.Item key="6">Bill</Menu.Item>
-                <Menu.Item key="7">Alex</Menu.Item>
+                <Menu.Item key="5">Ventas</Menu.Item>
+                <Menu.Item key="6">Clientes</Menu.Item>
               </Menu.SubMenu>
               <Menu.SubMenu key={ROUTES.PRODUCTOS} icon={<DesktopOutlined />} title="Productos">
                 <Menu.Item key={ROUTES.PRODUCTOS_LIST}>

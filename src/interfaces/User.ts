@@ -1,16 +1,17 @@
 import { Rol } from "./Rol";
 
 export interface User {
-  id: number;
+  id?: number;
   nombre: string;
   apellido: string;
   email: string;
-  cuentaConfirmada: boolean;
+  password?: string;
+  cuentaConfirmada?: boolean;
   direccion: string;
   codigoPostal: number;
-  telefono: string;
+  telefono?: string;
   fechaNacimiento?: string;
-  estado: boolean;
+  estado?: boolean;
   idRol: number;
   rol?: Rol;
 }

@@ -9,6 +9,7 @@ export default function Login() {
   const onFinishFailed = (errorInfo: any) => {
     console.log('Failed:', errorInfo);
   };
+  
   return (
     <>
       <Head>
@@ -18,13 +19,13 @@ export default function Login() {
         <link rel="icon" href="/404_Icono_White.ico" />
       </Head>
       <div 
+        className='fondo'
         style={{
           display: 'flex',
           flexDirection: 'column',
           alignItems: 'center',
           justifyContent: 'center',
           height: '100vh',
-          backgroundColor: '#f0f2f5'
         }}
       >
         <div
