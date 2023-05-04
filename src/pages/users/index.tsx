@@ -203,7 +203,7 @@ export default function Users() {
         title="Productos"
       >
         {contextHolder}
-        <h2 style={{marginTop: 0}}>Productos</h2>
+        <h2 style={{marginTop: 0}}>Usuarios</h2>
         <div style={{display: 'flex', flexDirection: 'column', width: '100%'}}>
           <div style={{display: 'flex', justifyContent: 'flex-end', marginBottom: '20px'}}>
             <Button type="primary" onClick={handleOpenModal}>Nuevo Usuario</Button>

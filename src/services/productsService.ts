@@ -28,6 +28,21 @@ export const getSubCategories = async (id: number): Promise<SubCategoria[]> => {
   return data
 }
 
+export const createSubCategory = async (subCategory: SubCategoria) => {
+  const { data } = await axios.post('/products/subcategories', subCategory)
+  return data
+}
+
+export const updateSubCategory = async (subCategory: SubCategoria) => {
+  const { data } = await axios.put(`/products/subcategories/${subCategory.id}`, subCategory)
+  return data
+}
+
+export const deleteSubCategory = async (id: number) => {
+  const { data } = await axios.delete(`/products/subcategories/${id}`)
+  return data
+}
+
 export const getProducts = async (): Promise<Producto[]> => {
   const { data } = await axios.get('/products')
   return data
@@ -40,6 +55,16 @@ export const getProduct = async (id: number): Promise<Producto> => {
 
 export const createProduct = async (product: Producto) => {
   const { data } = await axios.post('/products', product)
+  return data
+}
+
+export const updateProduct = async (product: Producto) => {
+  const { data } = await axios.put(`/products/${product.id}`, product)
+  return data
+}
+
+export const deleteProduct = async (id: number) => {
+  const { data } = await axios.delete(`/products/${id}`)
   return data
 }
 

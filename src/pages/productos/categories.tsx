@@ -6,7 +6,8 @@ import type { FilterValue, SorterResult } from 'antd/es/table/interface';
 import { ArrowPathRoundedSquareIcon, PencilSquareIcon, TrashIcon, PlusCircleIcon } from '@heroicons/react/24/outline'
 import Layout from "@/components/Layout/Layout"
 import CategoriasModal from "@/components/Products/CategoriasModal";
-import { getCategories, getSubCategories, deleteCategory } from "@/services/productsService"
+import SubcategoriasModal from "@/components/Products/SubcategoriasModal";
+import { getCategories, deleteCategory, getSubCategories, deleteSubCategory } from "@/services/productsService"
 import { Categoria } from "@/interfaces/Categoria";
 import { SubCategoria } from "@/interfaces/SubCategoria";
 
@@ -18,6 +19,10 @@ interface CategoriesState {
   sortedInfo: SorterResult<Categoria>
   lastExpandedRowId: number | null | undefined,
   isModalOpen: boolean;
+  isModalSubcategoriesOpen: boolean;
+  idCategory: number;
+  subcategoryEdit: SubCategoria | null;
+  actualCategory: number | null;
 }
 
 export default function Categories() {
@@ -29,6 +34,10 @@ export default function Categories() {
   const [sortedInfo, setSortedInfo] = useState<CategoriesState['sortedInfo']>({});
   const [lastExpandedRowId, setLastExpandedRowId] = useState<CategoriesState['lastExpandedRowId']>(null);
   const [isModalOpen, setIsModalOpen] = useState<CategoriesState['isModalOpen']>(false);
+  const [isModalSubcategoriesOpen, setIsModalSubcategoriesOpen] = useState<CategoriesState['isModalSubcategoriesOpen']>(false);
+  const [idCategory, setIdCategory] = useState<CategoriesState['idCategory']>(0);
+  const [subcategoryEdit, setSubcategoryEdit] = useState<CategoriesState['subcategoryEdit']>(null);
+  const [actualCategory, setActualCategory] = useState<CategoriesState['actualCategory']>(null);
 
   useEffect(() => {
     fetchCategories()
@@ -40,10 +49,29 @@ export default function Categories() {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isModalOpen])
 
+  useEffect(() => {
+    fetchSubcategories(idCategory)
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isModalSubcategoriesOpen])
+
   const fetchCategories = async () => {
     try {
       const responseCategories = await getCategories()
       setCategories(responseCategories)
+    } catch (error: any) {
+      messageApi.open({
+        content: 'Error al obtener datos',
+        duration: 2,
+        type: 'error'
+      })
+    }
+  }
+
+  const fetchSubcategories = async (id: number) => {
+    setActualCategory(id)
+    try {
+      const responseSubcategories = await getSubCategories(id)
+      setSubcategories(responseSubcategories)
     } catch (error: any) {
       messageApi.open({
         content: 'Error al obtener datos',
@@ -74,6 +102,27 @@ export default function Categories() {
       fetchCategories()
     } catch (error: any) {
       message.error({ content: error.response.data.message , key: 'deleteCategory', duration: 3 });
+    }
+  };
+
+  const confirmCreateSubcategory = async (id: number) => {
+    setIdCategory(id);
+    setIsModalSubcategoriesOpen(true);
+  };
+
+  const confirmEditSubcategory = async (subcategoria: SubCategoria) => {
+    setSubcategoryEdit(subcategoria);
+    setIsModalSubcategoriesOpen(true);
+  };
+
+  const confirmDeleteSubcategory = async (id: number) => {
+    try {
+      const response = await deleteSubCategory(id)
+      message.success({ content: response.message, key: 'deleteSubcategory', duration: 3 });
+      fetchCategories()
+      fetchSubcategories(actualCategory as number)
+    } catch (error: any) {
+      message.error({ content: error.response.data.message , key: 'deleteSubcategory', duration: 3 });
     }
   };
 
@@ -117,9 +166,16 @@ export default function Categories() {
       dataIndex: 'acciones',
       render: (acciones, record) => (
         <div>
-          <Button type="default" size="small" style={{padding: '0px'}}>
-            <PlusCircleIcon style={{width: '24px', height: '24px'}} />
-          </Button>
+          <Popconfirm
+            title="Crear subcategoría"
+            onConfirm={() => confirmCreateSubcategory(Number(record?.id))}
+            okText="Si"
+            cancelText="No"
+          >
+            <Button type="default" size="small" style={{padding: '0px'}} >
+              <PlusCircleIcon style={{width: '24px', height: '24px'}} />
+            </Button>
+          </Popconfirm>
           <Popconfirm
             title="Editar categoría"
             onConfirm={() => confirmEditCategory(record)}
@@ -159,19 +215,40 @@ export default function Categories() {
         title: 'Descripción',
         dataIndex: 'descripcion',
         render: (descripcion) => descripcion || '',
-        width: '70%',
+        width: '60%',
+      },
+      {
+        title: 'Estado',
+        dataIndex: 'estado',
+        render: (estado) => estado ? 'Activo' : 'Inactivo',
+        width: '10%',
       },
       {
         title: 'Acciones',
         dataIndex: 'acciones',
         render: (acciones, record) => (
           <div>
-            <Button type="default" size="small" style={{padding: '0px'}}>
-              <PencilSquareIcon style={{width: '24px', height: '24px'}} />
-            </Button>
-            <Button type="default" size="small" style={{padding: '0px'}}>
-              <TrashIcon style={{width: '24px', height: '24px'}} />
-            </Button>
+            <Popconfirm
+              title="Editar subcategoría"
+              onConfirm={() => confirmEditSubcategory(record)}
+              okText="Si"
+              cancelText="No"
+            >
+              <Button type="default" size="small" style={{padding: '0px'}}>
+                <PencilSquareIcon style={{width: '24px', height: '24px'}} />
+              </Button>
+            </Popconfirm>
+            <Popconfirm
+              title="Eliminar subcategoría"
+              description="¿Está seguro que desea eliminar la subcategoría?"
+              onConfirm={() => confirmDeleteSubcategory(Number(record.id))}
+              okText="Si"
+              cancelText="No"
+            >
+              <Button type="default" size="small" style={{padding: '0px'}}>
+                <TrashIcon style={{width: '24px', height: '24px'}} />
+              </Button>
+            </Popconfirm>
           </div>
         ),
         width: '10%',
@@ -195,8 +272,7 @@ export default function Categories() {
               expandedRowRender: expandedRowRender,
               onExpand: async (expanded, record) => {
                 if (expanded) {
-                  const responseSubCategories = await getSubCategories(Number(record.id))
-                  setSubcategories(responseSubCategories)
+                  await fetchSubcategories(Number(record?.id));
                   setLastExpandedRowId(record.id);
                 } else {
                   setLastExpandedRowId(null);
@@ -208,7 +284,23 @@ export default function Categories() {
           </div>
         </div>
       </Layout>
-      {isModalOpen && <CategoriasModal isModalOpen={isModalOpen} setIsModalOpen={setIsModalOpen} categoryEdit={categoryEdit} setCategoryEdit={setCategoryEdit} />}
+      {isModalOpen && 
+        <CategoriasModal 
+          isModalOpen={isModalOpen} 
+          setIsModalOpen={setIsModalOpen} 
+          categoryEdit={categoryEdit} 
+          setCategoryEdit={setCategoryEdit} 
+        />
+      }
+      {isModalSubcategoriesOpen && 
+        <SubcategoriasModal 
+          isModalSubcategoriesOpen={isModalSubcategoriesOpen} 
+          setIsModalSubcategoriesOpen={setIsModalSubcategoriesOpen} 
+          categoryId={idCategory} 
+          subcategoryEdit={subcategoryEdit}
+          setSubcategoryEdit={setSubcategoryEdit} 
+        />
+      }
     </>
   )
 }

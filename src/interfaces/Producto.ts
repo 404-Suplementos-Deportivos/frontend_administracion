@@ -9,7 +9,7 @@ export interface Producto {
   idCategoria: number;
   idSubCategoria: number;
   precioLista: number;
-  precioVenta: number;
+  precioVenta?: number;
   stock: number;
   stockMinimo: number;
   estado?: boolean;

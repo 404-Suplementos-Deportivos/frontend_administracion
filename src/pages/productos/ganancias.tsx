@@ -18,24 +18,24 @@ interface GananciasState {
 }
 
 const columns: ColumnsType<Ganancia> = [
-  {
-    title: 'Código',
-    dataIndex: 'id',
-    sorter: (a, b) => (a?.id || 0) - (b?.id || 0),
-    render: (id) => id?.toString() || '',
-    width: '10%',
-  },
+  // {
+  //   title: 'Código',
+  //   dataIndex: 'id',
+  //   sorter: (a, b) => (a?.id || 0) - (b?.id || 0),
+  //   render: (id) => id?.toString() || '',
+  //   width: '10%',
+  // },
   {
     title: 'Vigencia',
     dataIndex: 'vigencia',
     render: (vigencia) => vigencia || '',    
-    width: '45%',
+    width: '50%',
   },
   {
     title: 'Porcentaje',
     dataIndex: 'porcentaje',
     render: (porcentaje) => `${porcentaje?.toString()}%` || '-',
-    width: '45%',
+    width: '50%',
   },
 ];
 
@@ -93,10 +93,10 @@ export default function Ganancias() {
         title="Productos"
       >
         {contextHolder}
-        <h2 style={{marginTop: 0}}>Productos</h2>
+        <h2 style={{marginTop: 0}}>Rentabilidad</h2>
         <div style={{display: 'flex', flexDirection: 'column', width: '100%'}}>
           <div style={{display: 'flex', justifyContent: 'flex-end', marginBottom: '20px'}}>
-            <Button type="primary" onClick={handleOpenModal}>Agregar Nueva Ganancia</Button>
+            <Button type="primary" onClick={handleOpenModal}>Agregar Nueva Rentabilidad</Button>
           </div>
           <div>
             <div>Filtros</div>
