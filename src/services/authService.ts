@@ -1,6 +1,6 @@
 import axios from '@/libs/axios'
+import { UsuarioLogin } from '@/interfaces/UsuarioLogin'
 import { UsuarioAuth } from '@/interfaces/UsuarioAuth'
-import { UsuarioLogin } from '@/interfaces/UsuarioLogin';
 
 interface LoginResponse {
   token: string;

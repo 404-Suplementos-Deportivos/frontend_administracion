@@ -12,7 +12,8 @@ import {
   NotificationOutlined,
   SettingOutlined
 } from '@ant-design/icons'
-import { Breadcrumb, Layout as LayoutComponent, Menu, theme, MenuProps } from 'antd'
+import { Breadcrumb, Layout as LayoutComponent, Menu, theme, MenuProps, Button } from 'antd'
+import { ROLES } from '@/interfaces/RolesEnum';
 import { useAppSelector, useAppDispatch } from '@/hooks/useReduxStore'
 import { setUsuarioAuth, setToken, clearUsuarioAuth } from '@/store/features/auth/authSlice'
 import { getProfile } from '@/services/authService'
@@ -52,7 +53,7 @@ const Layout = ({children, title, description=desc}: LayoutProps) => {
   const router = useRouter()
   const [selectedKey, setSelectedKey] = useState<LayoutState['selectedKey']>('');
   const dispatch = useAppDispatch()
-  const token = useAppSelector(state => state.auth.token)
+  const { token, usuario } = useAppSelector(state => state.auth)
 
   const { pathname } = router
 
@@ -70,13 +71,29 @@ const Layout = ({children, title, description=desc}: LayoutProps) => {
       getProfileData()
     } else {
       dispatch(clearUsuarioAuth())
+      router.push('/login')
     }
-  }, [dispatch, token])
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+
+  useEffect(() => {
+    if(usuario && usuario.rol !== ROLES.ADMIN) {
+      dispatch(clearUsuarioAuth())
+      router.push('/login')
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [usuario])
 
   useEffect(() => {
     const path = pathname.split('/')[1]
     setSelectedKey('/' + path)
   }, [pathname])
+
+  const handleLogout = () => {
+    localStorage.removeItem('token')
+    dispatch(clearUsuarioAuth())
+    router.push('/login')
+  }
 
   // TODO: Agregar Redux-Toolkit con Cargando
   return (
@@ -126,10 +143,8 @@ const Layout = ({children, title, description=desc}: LayoutProps) => {
                   <Link href={ROUTES.USUARIOS_LIST}>Listado</Link>
                 </Menu.Item>
               </Menu.SubMenu>
-              <Menu.Item key="logout" icon={<FileOutlined />}>
-                <Link href='/'>
+              <Menu.Item key="logout" icon={<FileOutlined />} onClick={handleLogout}>
                   Salir
-                </Link>
               </Menu.Item>
             </Menu>
           ) : null}
@@ -141,8 +156,8 @@ const Layout = ({children, title, description=desc}: LayoutProps) => {
           </Header>
           <Content style={{ margin: '0 16px' }}>
             <Breadcrumb style={{ margin: '16px 0' }}>
-              <Breadcrumb.Item>User</Breadcrumb.Item>
-              <Breadcrumb.Item>Bill</Breadcrumb.Item>
+              <Breadcrumb.Item>Usuario</Breadcrumb.Item>
+              <Breadcrumb.Item>{usuario?.nombre}</Breadcrumb.Item>
             </Breadcrumb>
             <div style={{ padding: 24, minHeight: 360}}>
               {children}

@@ -1,15 +1,76 @@
+import { useState, useEffect, useRef } from 'react';
 import Head from 'next/head';
-import { Button, Checkbox, Form, Input } from 'antd';
+import Image from 'next/image';
+import { useRouter } from 'next/router';
+import { Button, Checkbox, Form, Input, Spin, message } from 'antd';
+import { UsuarioLogin } from '@/interfaces/UsuarioLogin';
+import { ROLES } from '@/interfaces/RolesEnum';
+import { useAppSelector, useAppDispatch } from '@/hooks/useReduxStore';
+import { setToken, clearUsuarioAuth, setUsuarioAuth } from '@/store/features/auth/authSlice';
+import { getProfileAsync } from '@/store/features/auth/authSlice';
+import { getProfile } from '@/services/authService';
+import { login } from '@/services/authService';
+import Icono from '/public/404_Icono.png'
+
+interface LoginState {
+  loading: boolean
+}
 
 export default function Login() {
-  const onFinish = (values: any) => {
-    console.log('Success:', values);
+  const dispatch = useAppDispatch()
+  const router = useRouter()
+  const { isAuth, usuario, error } = useAppSelector(state => state.auth)
+  const formRef = useRef<any>(null)
+  const [loading, setLoading] = useState<LoginState['loading']>(false)
+  const [messageApi, contextHolder] = message.useMessage();
+
+  useEffect(() => {
+    if(localStorage.getItem('token')) {
+      const getProfile = async () => {
+        try {
+          const token = localStorage.getItem('token')
+          dispatch(setToken(token as string))
+          await dispatch(getProfileAsync())
+        } catch (error: any) {
+          console.log(error.response.data.message)
+          messageApi.error(error.response.data.message)
+        }
+      }
+      getProfile()
+    } else {
+      dispatch(clearUsuarioAuth())
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+
+  useEffect(() => {
+    if(isAuth && usuario && usuario.rol === ROLES.ADMIN) {
+      router.push('/')
+    } else if(isAuth && usuario && usuario.rol !== ROLES.ADMIN) {
+      dispatch(clearUsuarioAuth())
+      messageApi.error('No tienes permisos para acceder a esta sección')
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isAuth, usuario])
+
+  const onFinish = async (values: UsuarioLogin) => {
+    setLoading(true)
+    try {
+      const data  = await login(values)
+
+      if(!data.token) throw new Error('No se pudo obtener el token')
+      dispatch(setToken(data.token))
+
+      dispatch(getProfileAsync())
+    } catch (error: any) {
+      console.log(error.response.data.message)
+      messageApi.error(error.response.data.message)
+    } finally {
+      formRef.current.resetFields()
+      setLoading(false)
+    }
   };
-  
-  const onFinishFailed = (errorInfo: any) => {
-    console.log('Failed:', errorInfo);
-  };
-  
+
   return (
     <>
       <Head>
@@ -18,6 +79,7 @@ export default function Login() {
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/404_Icono_White.ico" />
       </Head>
+      {contextHolder}
       <div 
         className='fondo'
         style={{
@@ -38,42 +100,46 @@ export default function Login() {
             boxShadow: '0px 0px 5px 0px rgba(0,0,0,0.75)'
           }}
         >
-          <Form
-            name="basic"
-            labelCol={{ span: 8 }}
-            wrapperCol={{ span: 16 }}
-            style={{ maxWidth: 600 }}
-            initialValues={{ remember: true }}
-            onFinish={onFinish}
-            onFinishFailed={onFinishFailed}
-            autoComplete="off"
-          >
-            <Form.Item
-              label="E-Mail"
-              name="email"
-              rules={[{ required: true, message: 'Ingresa tu e-mail!' }]}
+          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', marginBottom: '20px' }}>
+            <Image src={Icono} alt='404 Icono' width={100} height={100} />
+            <h2 style={{ marginLeft: '20px', fontWeight: 'normal' }}>Admin Dashboard</h2>
+          </div>
+          <Spin spinning={loading} tip='Cargando...'>
+            <Form
+              name="basic"
+              labelCol={{ span: 8 }}
+              wrapperCol={{ span: 16 }}
+              style={{ maxWidth: 600 }}
+              onFinish={onFinish}
+              ref={formRef}
             >
-              <Input />
-            </Form.Item>
+              <Form.Item
+                label="E-Mail"
+                name="email"
+                rules={[{ required: true, message: 'Ingresa tu e-mail!' }]}
+              >
+                <Input />
+              </Form.Item>
 
-            <Form.Item
-              label="Password"
-              name="password"
-              rules={[{ required: true, message: 'Ingresa tu password!' }]}
-            >
-              <Input.Password />
-            </Form.Item>
+              <Form.Item
+                label="Password"
+                name="password"
+                rules={[{ required: true, message: 'Ingresa tu password!' }]}
+              >
+                <Input.Password />
+              </Form.Item>
 
-            <Form.Item name="remember" valuePropName="checked" wrapperCol={{ offset: 8, span: 16 }}>
-              <Checkbox>Remember me</Checkbox>
-            </Form.Item>
+              <Form.Item name="remember" valuePropName="checked" wrapperCol={{ offset: 8, span: 16 }}>
+                <Checkbox>Remember me</Checkbox>
+              </Form.Item>
 
-            <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
-              <Button type="primary" htmlType="submit">
-                Submit
-              </Button>
-            </Form.Item>
-          </Form>
+              <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
+                <Button type="primary" htmlType="submit">
+                  Ingresar
+                </Button>
+              </Form.Item>
+            </Form>
+          </Spin>
         </div>
       </div>
     </>
