@@ -37,12 +37,13 @@ const desc: string = 'Panel de Admnistracion de Tienda 404 Suplementos Deportivo
 
 enum ROUTES {
   DASHBOARD = '/',
-  COMPRAS = '/compras',
-  VENTAS = '/ventas',
   PRODUCTOS = '/productos',
   PRODUCTOS_LIST = '/productos/list',
   PRODUCTOS_CATEGORIES = '/productos/categories',
   PRODUCTOS_RENTABILIDAD = '/productos/rentabilidad',
+  COMPRAS = '/compras',
+  COMPRAS_LIST = '/compras/list',
+  COMPRAS_PROVEEDORES = '/compras/proveedores',
   USUARIOS = '/users',
   USUARIOS_LIST = '/users',
   LOGOUT = '/logout'
@@ -114,14 +115,18 @@ const Layout = ({children, title, description=desc}: LayoutProps) => {
           </div>
           {selectedKey ? (
             <Menu theme="dark" mode="inline" inlineCollapsed={collapsed} defaultSelectedKeys={[pathname]} selectedKeys={[pathname]} defaultOpenKeys={[selectedKey]}>
-              <Menu.Item key="/" icon={<PieChartOutlined />}>
-                <Link href='/'>
+              <Menu.Item key={ROUTES.DASHBOARD} icon={<PieChartOutlined />}>
+                <Link href={ROUTES.DASHBOARD}>
                   Dashboard
                 </Link>
               </Menu.Item>
-              <Menu.SubMenu key="compras" icon={<UserOutlined />} title="Compras">
-                <Menu.Item key="1">Compras</Menu.Item>
-                <Menu.Item key="3">Proveedores</Menu.Item>
+              <Menu.SubMenu key={ROUTES.COMPRAS} icon={<UserOutlined />} title="Compras">
+                <Menu.Item key={ROUTES.COMPRAS_LIST}>
+                  <Link href={ROUTES.COMPRAS_LIST}>Listado</Link>
+                </Menu.Item>
+                <Menu.Item key={ROUTES.COMPRAS_PROVEEDORES}>
+                  <Link href={ROUTES.COMPRAS_PROVEEDORES}>Proveedores</Link>
+                </Menu.Item>
               </Menu.SubMenu>
               <Menu.SubMenu key="ventas" icon={<UserOutlined />} title="Ventas">
                 <Menu.Item key="5">Ventas</Menu.Item>
