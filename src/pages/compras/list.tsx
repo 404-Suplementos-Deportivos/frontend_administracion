@@ -6,7 +6,6 @@ import type { FilterValue, SorterResult } from 'antd/es/table/interface';
 import { ArrowPathRoundedSquareIcon, PencilSquareIcon, TrashIcon } from '@heroicons/react/24/outline'
 import Layout from "@/components/Layout/Layout"
 import NotaPedidoModal from "@/components/Compras/NotaPedidoModal";
-import NotaPedidoModalNew from "@/components/Compras/NotaPedidoModalNew";
 import { getNotasPedido } from "@/services/comprasService";
 import { NotaPedido } from "@/interfaces/NotaPedido";
 import { DetalleNotaPedido } from "@/interfaces/DetalleNotaPedido";
@@ -240,7 +239,7 @@ export default function List() {
         </div>
       </Layout>
       {isModalOpen && 
-        <NotaPedidoModalNew 
+        <NotaPedidoModal 
           notaPedidoEdit={notaPedidoEdit} 
           setNotaPedidoEdit={setNotaPedidoEdit} 
           isModalOpen={isModalOpen} 
