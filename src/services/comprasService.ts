@@ -2,6 +2,8 @@ import axios from '@/libs/axios'
 import { Proveedor } from '@/interfaces/Proveedor'
 import { TipoIVA } from '@/interfaces/TipoIVA'
 import { NotaPedido } from '@/interfaces/NotaPedido'
+import { EstadoNP } from '@/interfaces/EstadoNP'
+import { ProductoNP } from '@/interfaces/ProductoNP'
 
 export const getProveedores = async () => {
   const { data } = await axios.get<Proveedor[]>('/compras/proveedores')
@@ -15,6 +17,11 @@ export const getProveedor = async (id: number) => {
 
 export const getTiposIVA = async () => {
   const { data } = await axios.get<TipoIVA[]>('/compras/tipos-iva')
+  return data
+}
+
+export const getEstadosNP = async () => {
+  const { data } = await axios.get<EstadoNP[]>('/compras/estados-np')
   return data
 }
 
@@ -45,11 +52,12 @@ export const getNotaPedido = async (id: number) => {
 }
 
 export const createNotaPedido = async (notaPedido: any) => {
+  console.log( 'createNotaPedido', notaPedido )
   const { data } = await axios.post('/compras', notaPedido)
   return data
 }
 
-export const updateNotaPedido = async (notaPedido: NotaPedido) => {
+export const updateNotaPedido = async (notaPedido: any) => {
   const { data } = await axios.put(`/compras/${notaPedido.id}`, notaPedido)
   return data
 }
@@ -65,6 +73,6 @@ export const updateStateNotaPedido = async (id: number, estado: number) => {
 }
 
 export const getProductosProveedor = async (id: number) => {
-  const { data } = await axios.get(`/compras/productos-proveedor/${id}`)
+  const { data } = await axios.get<ProductoNP[]>(`/compras/productos-proveedor/${id}`)
   return data
 }

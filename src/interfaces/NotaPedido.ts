@@ -7,7 +7,10 @@ export interface NotaPedido {
   fechaVencimiento: string;
   usuario: string;
   proveedor: string;
+  proveedorId?: number;
   estadoNP: string;
+  estadoNPId?: number;
   tipoCompra: string
-  detalleNotaPedido?: DetalleNotaPedido[];
+  tipoCompraId?: number;
+  detalleNotaPedido: DetalleNotaPedido[];
 }

@@ -6,6 +6,7 @@ import type { FilterValue, SorterResult } from 'antd/es/table/interface';
 import { ArrowPathRoundedSquareIcon, PencilSquareIcon, TrashIcon } from '@heroicons/react/24/outline'
 import Layout from "@/components/Layout/Layout"
 import NotaPedidoModal from "@/components/Compras/NotaPedidoModal";
+import NotaPedidoModalNew from "@/components/Compras/NotaPedidoModalNew";
 import { getNotasPedido } from "@/services/comprasService";
 import { NotaPedido } from "@/interfaces/NotaPedido";
 import { DetalleNotaPedido } from "@/interfaces/DetalleNotaPedido";
@@ -57,9 +58,16 @@ export default function List() {
     setSortedInfo(sorter as SorterResult<NotaPedido>);
   };
 
-  const confirmEditProduct = async (notaPedido: NotaPedido) => {
-    setNotaPedidoEdit(notaPedido);
-    setIsModalOpen(true);
+  const confirmEditNP = async (notaPedido: NotaPedido) => {
+    if(notaPedido.estadoNP === 'PEND_ACEPTACION') {
+      setNotaPedidoEdit(notaPedido)
+      handleOpenModal()
+    } else {
+      messageApi.open({
+        type: 'warning',
+        content: 'No se puede editar una nota de pedido que no se encuentre en estado PEND_ACEPTACION',
+      });
+    }
   }
 
   const confirmDeleteProduct = async (notaPedido: NotaPedido) => {
@@ -130,8 +138,8 @@ export default function List() {
       render: (acciones, record) => (
         <div>
           <Popconfirm
-            title="Editar producto"
-            onConfirm={() => confirmEditProduct(record)}
+            title="Editar nota de pedido"
+            onConfirm={() => confirmEditNP(record)}
             okText="Si"
             cancelText="No"
           >
@@ -232,7 +240,7 @@ export default function List() {
         </div>
       </Layout>
       {isModalOpen && 
-        <NotaPedidoModal 
+        <NotaPedidoModalNew 
           notaPedidoEdit={notaPedidoEdit} 
           setNotaPedidoEdit={setNotaPedidoEdit} 
           isModalOpen={isModalOpen} 

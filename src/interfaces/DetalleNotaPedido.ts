@@ -1,8 +1,9 @@
 export interface DetalleNotaPedido {
-  cantidadPedida: number;
-  cantidadRecibida: number;
+  cantidadPedida?: number;
+  cantidadRecibida?: number;
   precio: number;
+  estado?: boolean;
   descuento: number;
-  estado: boolean
-  producto: string;
+  producto?: string;
+  productoId: number;
 }

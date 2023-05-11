@@ -4,24 +4,23 @@ import type { ColumnsType, TablePaginationConfig } from 'antd/es/table';
 import type { TableRowSelection } from 'antd/es/table/interface';
 import type { FormInstance } from 'antd/es/form';
 import dayjs from 'dayjs';
-import { createNotaPedido, updateNotaPedido, getProveedores, getProductosProveedor, getEstadosNP } from '@/services/comprasService';
+import { createNotaPedido, updateNotaPedido, getProveedores, getProductosProveedor } from '@/services/comprasService';
 import { NotaPedido } from '@/interfaces/NotaPedido';
 import { DetalleNotaPedido } from '@/interfaces/DetalleNotaPedido';
 import { Proveedor } from '@/interfaces/Proveedor';
 import { Producto } from '@/interfaces/Producto';
 import { ProductoNP } from '@/interfaces/ProductoNP';
-import { EstadoNP } from '@/interfaces/EstadoNP';
 
 const { Option } = Select;
 const { Search } = Input;
 
-interface IDetalleNotaPedido {
+interface INotaPedidoAPI {
   id?: number;
   fechaVencimiento: string;
-  proveedorId: number;
+  proveedorId?: number;
   tipoCompraId: number;
   estadoNPId?: number;
-  detalleNotaPedido: DetalleNotaPedido[]
+  detalleNotaPedido: DetalleNotaPedido[];
 }
 
 interface NotaPedidoModalProps {
@@ -33,13 +32,11 @@ interface NotaPedidoModalProps {
 
 interface NotaPedidoModalState {
   proveedores: Proveedor[];
-  selectedTipoCompra: number;
   productos: ProductoNP[];
-  selectedProveedor: number;
-  estadosNP: EstadoNP[];
+  selectedProveedorId: number;
+  selectedTipoCompraId: number;
   selectedDate: string;
-  detalle: IDetalleNotaPedido;
-  detalleEdit: DetalleNotaPedido[];
+  notaPedido: INotaPedidoAPI
 }
 
 interface SelectOption {
@@ -69,80 +66,63 @@ const validateMessages = {
 };
 
 
-const NotaPedidoModal = ({isModalOpen, setIsModalOpen, notaPedidoEdit, setNotaPedidoEdit}: NotaPedidoModalProps) => {
-  const [productos, setProductos] = useState<NotaPedidoModalState['productos']>([]);
-  const [proveedores, setProveedores] = useState<NotaPedidoModalState['proveedores']>([]);
-  const [selectedProveedor, setSelectedProveedor] = useState<NotaPedidoModalState['selectedProveedor']>(0);
-  const [selectedTipoCompra, setSelectedTipoCompra] = useState<NotaPedidoModalState['selectedTipoCompra']>(0);
-  const [selectedDate, setSelectedDate] = useState<NotaPedidoModalState['selectedDate']>(dayjs().format('YYYY-MM-DD') as string);
-  const [estadosNP, setEstadosNP] = useState<NotaPedidoModalState['estadosNP']>([]);
-  const [detalle, setDetalle] = useState<NotaPedidoModalState['detalle']> ({
-    fechaVencimiento: dayjs().format('YYYY-MM-DD'),
-    proveedorId: 1,
-    tipoCompraId: 1,
-    detalleNotaPedido: []
-  });
-  const [detalleEdit, setDetalleEdit] = useState<NotaPedidoModalState['detalleEdit']>([]);
+const NotaPedidoModalNew = ({isModalOpen, setIsModalOpen, notaPedidoEdit, setNotaPedidoEdit}: NotaPedidoModalProps) => {
   const [messageApi, contextHolder] = message.useMessage();
   const form = useRef<any>(null);
+  const [productos, setProductos] = useState<NotaPedidoModalState['productos']>([]);
+  const [proveedores, setProveedores] = useState<NotaPedidoModalState['proveedores']>([]);
+  const [selectedProveedorId, setSelectedProveedorId] = useState<NotaPedidoModalState['selectedProveedorId']>(0);
+  const [selectedTipoCompraId, setSelectedTipoCompraId] = useState<NotaPedidoModalState['selectedTipoCompraId']>(0);
+  const [selectedDate, setSelectedDate] = useState<NotaPedidoModalState['selectedDate']>(dayjs().format('YYYY-MM-DD'));
+  const [notaPedido, setNotaPedido] = useState<NotaPedidoModalState['notaPedido']>({
+    fechaVencimiento: dayjs().format('YYYY-MM-DD'),
+    tipoCompraId: 1,
+    detalleNotaPedido: [],
+  });
 
   const tipoCompra: SelectOption[] = [
     { value: "1", label: 'Local' },
     { value: "2", label: 'Exterior' },
   ]
 
-  const estadosNPSelect: SelectOption[] = estadosNP.map((estadoNP: EstadoNP) => {
-    return {
-      value: estadoNP.id.toString(),
-      label: estadoNP.nombre
-    }
-  })
-
   useEffect(() => {
     // Consultar API p/ TipoCompras
     fetchProveedores();
-    fetchProductosProveedor(selectedProveedor);
-    fetchEstadoNP();
+    fetchProductosProveedor(0);
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   useEffect(() => {
     if(notaPedidoEdit?.id) {
-      console.log( notaPedidoEdit )
       fetchProveedores();
       fetchProductosProveedor(Number(notaPedidoEdit.proveedorId));
-      fetchEstadoNP();
+
+      setSelectedProveedorId(Number(notaPedidoEdit.proveedorId));
+      setSelectedTipoCompraId(Number(notaPedidoEdit.tipoCompraId));
+      setSelectedDate(dayjs(notaPedidoEdit.fechaVencimiento).format('YYYY-MM-DD'));
+      setNotaPedido({
+        id: notaPedidoEdit.id,
+        fechaVencimiento: dayjs(notaPedidoEdit.fechaVencimiento).format('YYYY-MM-DD'),
+        proveedorId: Number(notaPedidoEdit.proveedorId),
+        tipoCompraId: Number(notaPedidoEdit.tipoCompraId),
+        estadoNPId: Number(notaPedidoEdit.estadoNPId),
+        detalleNotaPedido: notaPedidoEdit?.detalleNotaPedido?.map((item: any) => {
+          return {
+            ...item,
+            cantidadRecibida: 0
+          }
+        })
+      });
+
       form.current.setFieldsValue({
-        fechaVencimiento: dayjs(notaPedidoEdit.fechaVencimiento),
         proveedorId: notaPedidoEdit.proveedorId,
         tipoCompraId: notaPedidoEdit.tipoCompraId?.toString(),
+        fechaVencimiento: dayjs(notaPedidoEdit.fechaVencimiento),
       });
-      setSelectedProveedor(Number(notaPedidoEdit.proveedorId));
-      setSelectedTipoCompra(Number(notaPedidoEdit.tipoCompraId));
-      setSelectedDate(dayjs(notaPedidoEdit.fechaVencimiento).format('YYYY-MM-DD'));
-      if(notaPedidoEdit.detalleNotaPedido) {
-        setDetalleEdit(notaPedidoEdit.detalleNotaPedido);
-        setDetalle({
-          fechaVencimiento: dayjs(notaPedidoEdit.fechaVencimiento).format('YYYY-MM-DD'),
-          proveedorId: notaPedidoEdit.proveedorId as number,
-          tipoCompraId: notaPedidoEdit.tipoCompraId as number,
-          detalleNotaPedido: notaPedidoEdit.detalleNotaPedido
-        })
-      }
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [notaPedidoEdit])
-
-  useEffect(() => {
-    setDetalle({
-      fechaVencimiento: selectedDate,
-      proveedorId: selectedProveedor,
-      tipoCompraId: selectedTipoCompra,
-      detalleNotaPedido: detalle.detalleNotaPedido
-    })
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [selectedProveedor, selectedTipoCompra, selectedDate])
-
+  
   const fetchProveedores = async () => {
     try {
       const response = await getProveedores();
@@ -167,21 +147,8 @@ const NotaPedidoModal = ({isModalOpen, setIsModalOpen, notaPedidoEdit, setNotaPe
     }
   }
 
-  const fetchEstadoNP = async () => {
-    try {
-      const response = await getEstadosNP();
-      setEstadosNP(response);
-    } catch (error: any) {
-      messageApi.open({
-        type: 'warning',
-        content: error.response.data.message,
-      });
-    }
-  }
-
   const onFinish = async (values: any) => {
-    console.log( detalle )
-    if(detalle.detalleNotaPedido.length === 0) return messageApi.open({
+    if(notaPedido.detalleNotaPedido.length === 0) return messageApi.open({
       type: 'warning',
       content: 'Debe agregar al menos un producto a la nota de pedido',
     });
@@ -189,18 +156,26 @@ const NotaPedidoModal = ({isModalOpen, setIsModalOpen, notaPedidoEdit, setNotaPe
     if(notaPedidoEdit?.id) {
       updateNotaPedidoModal({
         id: notaPedidoEdit.id,
+        fechaVencimiento: selectedDate,
+        proveedorId: selectedProveedorId,
+        tipoCompraId: selectedTipoCompraId,
         estadoNPId: notaPedidoEdit.estadoNPId,
-        tipoCompraId: Number(values.tipoCompraId),
-        detalleNotaPedido: detalleEdit,
-        fechaVencimiento: detalle.fechaVencimiento,
-        proveedorId: detalle.proveedorId
+        detalleNotaPedido: notaPedido.detalleNotaPedido.map((item: any) => {
+          return {
+            ...item,
+            cantidadRecibida: 0
+          }
+        })
       });
     } else {
+   
       createNotaPedidoModal({
-        ...detalle,
-        detalleNotaPedido: detalle.detalleNotaPedido.map((detalleNP: any) => {
+        fechaVencimiento: selectedDate,
+        proveedorId: selectedProveedorId,
+        tipoCompraId: selectedTipoCompraId,
+        detalleNotaPedido: notaPedido.detalleNotaPedido.map((item: any) => {
           return {
-            ...detalleNP,
+            ...item,
             cantidadRecibida: 0
           }
         })
@@ -209,7 +184,7 @@ const NotaPedidoModal = ({isModalOpen, setIsModalOpen, notaPedidoEdit, setNotaPe
     
   };
 
-  const createNotaPedidoModal = async (data: IDetalleNotaPedido) => {
+  const createNotaPedidoModal = async (data: INotaPedidoAPI) => {
     try {
       const response = await createNotaPedido(data);
       messageApi.open({
@@ -226,7 +201,7 @@ const NotaPedidoModal = ({isModalOpen, setIsModalOpen, notaPedidoEdit, setNotaPe
     }
   }
 
-  const updateNotaPedidoModal = async (data: IDetalleNotaPedido) => {
+  const updateNotaPedidoModal = async (data: any) => {
     try {
       const response = await updateNotaPedido(data);
       messageApi.open({
@@ -243,55 +218,46 @@ const NotaPedidoModal = ({isModalOpen, setIsModalOpen, notaPedidoEdit, setNotaPe
     }
   }
 
-  const handleChangeTipoCompra = (value: string) => {
-    setSelectedTipoCompra(Number(value))
-  }
-
-  const handleChangeProveedor = (value: string) => {
-    setSelectedProveedor(Number(value))
-    fetchProductosProveedor(Number(value));
-  }
-
   const handleChangeInput = (record: ProductoNP, value: any, column: string) => {
-    const index = detalle.detalleNotaPedido.findIndex(
+    const index = notaPedido.detalleNotaPedido.findIndex(
       (item: any) => item.productoId === record.id
     );
   
     if (value === 0 && index !== -1) { // Eliminar el producto si su cantidad es 0
-      setDetalle({
-        ...detalle,
+      setNotaPedido({
+        ...notaPedido,
         detalleNotaPedido: [
-          ...detalle.detalleNotaPedido.slice(0, index),
-          ...detalle.detalleNotaPedido.slice(index + 1),
+          ...notaPedido.detalleNotaPedido.slice(0, index),
+          ...notaPedido.detalleNotaPedido.slice(index + 1),
         ],
       });
     } else if (index === -1) { // Agregar el producto si no existe en el array
-      setDetalle({
-        ...detalle,
+      setNotaPedido({
+        ...notaPedido,
         detalleNotaPedido: [
-          ...detalle.detalleNotaPedido,
+          ...notaPedido.detalleNotaPedido,
           {
             [column]: value,
             precio: record.precio,
             descuento: 0,
             productoId: record.id,
-          },
+          }
         ],
       });
     } else { // Actualizar la cantidad del producto existente
-      setDetalle({
-        ...detalle,
+      setNotaPedido({
+        ...notaPedido,
         detalleNotaPedido: [
-          ...detalle.detalleNotaPedido.slice(0, index),
+          ...notaPedido.detalleNotaPedido.slice(0, index),
           {
-            ...detalle.detalleNotaPedido[index],
+            ...notaPedido.detalleNotaPedido[index],
             [column]: value,
           },
-          ...detalle.detalleNotaPedido.slice(index + 1),
+          ...notaPedido.detalleNotaPedido.slice(index + 1),
         ],
       });
     }
-    console.log( detalle )
+    console.log( notaPedido.detalleNotaPedido )
   };
 
   const handleCancel = () => {
@@ -326,7 +292,7 @@ const NotaPedidoModal = ({isModalOpen, setIsModalOpen, notaPedidoEdit, setNotaPe
       key: 'cantidadRecibida',
       render: (text, record) => (
         <Space size="middle">
-          <InputNumber min={0}  disabled={notaPedidoEdit?.id ? true : true} defaultValue={0} onChange={(value) => handleChangeInput(record, value, 'cantidadRecibida')} />
+          <InputNumber min={0}  disabled={notaPedidoEdit?.id ? true : true} defaultValue={0}  />
         </Space>
       ),
       width: '25%',
@@ -339,7 +305,7 @@ const NotaPedidoModal = ({isModalOpen, setIsModalOpen, notaPedidoEdit, setNotaPe
           <InputNumber 
             min={0} 
             defaultValue={notaPedidoEdit?.id ? (notaPedidoEdit.detalleNotaPedido?.find((detalleNP: any) => detalleNP.productoId === record.id)?.cantidadPedida || 0) : 0}
-            onChange={(value) => handleChangeInput(record, value, 'cantidadPedida')} 
+            onChange={(value) => handleChangeInput(record, value, 'cantidadPedida')}
           />
         </Space>
       ),
@@ -380,7 +346,7 @@ const NotaPedidoModal = ({isModalOpen, setIsModalOpen, notaPedidoEdit, setNotaPe
               allowClear
               placeholder="Busca un tipo de compra"
               options = {tipoCompra}
-              onChange={(value) => handleChangeTipoCompra(value)}
+              onChange={(value) => setSelectedTipoCompraId(Number(value))}
             />
           </Form.Item>
           <Form.Item name="proveedorId" label="Proveedor" rules={[{ required: true, message: 'Selecciona un proveedor!' }]}>
@@ -397,7 +363,7 @@ const NotaPedidoModal = ({isModalOpen, setIsModalOpen, notaPedidoEdit, setNotaPe
                 value: proveedor.id,
                 label: proveedor.nombre
               }))}
-              onChange={handleChangeProveedor}
+              onChange={(value) => { setSelectedProveedorId(Number(value)); fetchProductosProveedor(value); }}
             />
           </Form.Item>
           <Table<ProductoNP>
@@ -425,4 +391,4 @@ const NotaPedidoModal = ({isModalOpen, setIsModalOpen, notaPedidoEdit, setNotaPe
   )
 }
 
-export default NotaPedidoModal
+export default NotaPedidoModalNew
