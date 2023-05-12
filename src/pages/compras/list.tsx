@@ -6,6 +6,7 @@ import type { FilterValue, SorterResult } from 'antd/es/table/interface';
 import { ArrowPathRoundedSquareIcon, PencilSquareIcon, TrashIcon } from '@heroicons/react/24/outline'
 import Layout from "@/components/Layout/Layout"
 import NotaPedidoModal from "@/components/Compras/NotaPedidoModal";
+import ChangeStateModal from "@/components/Compras/ChangeStateModal";
 import { getNotasPedido } from "@/services/comprasService";
 import { NotaPedido } from "@/interfaces/NotaPedido";
 import { DetalleNotaPedido } from "@/interfaces/DetalleNotaPedido";
@@ -15,6 +16,7 @@ interface ListNotasPedidoState {
   sortedInfo: SorterResult<NotaPedido>;
   lastExpandedRowId: number | null | undefined;
   isModalOpen: boolean;
+  isModalChangeStateOpen: boolean;
   notasPedido: NotaPedido[] | undefined;
   notaPedidoEdit: NotaPedido | null;
 }
@@ -28,11 +30,12 @@ export default function List() {
   const [sortedInfo, setSortedInfo] = useState<ListNotasPedidoState['sortedInfo']>({});
   const [lastExpandedRowId, setLastExpandedRowId] = useState<ListNotasPedidoState['lastExpandedRowId']>(null);
   const [isModalOpen, setIsModalOpen] = useState<ListNotasPedidoState['isModalOpen']>(false);
+  const [isModalChangeStateOpen, setIsModalChangeStateOpen] = useState<ListNotasPedidoState['isModalChangeStateOpen']>(false);
 
   useEffect(() => {
     fetchNotasPedido()
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isModalOpen])
+  }, [isModalOpen, isModalChangeStateOpen])
 
   const fetchNotasPedido = async () => {
     try {
@@ -69,21 +72,15 @@ export default function List() {
     }
   }
 
-  const confirmDeleteProduct = async (notaPedido: NotaPedido) => {
-    try {
-      // const response = await deleteProduct(producto.id as number)
-      // messageApi.open({
-      //   type: 'success',
-      //   content: response.message,
-      // }).then(() => {
-      //   fetchNotasPedido();
-      // });
-    } catch (error: any) {
-      messageApi.open({
+  const confirmChangeStateNP = async (notaPedido: NotaPedido) => {
+    if(notaPedido.estadoNP === 'RECHAZADA') {
+      return messageApi.open({
         type: 'warning',
-        content: error.response.data.message,
+        content: 'No se puede cambiar estado de una nota de pedido que no se encuentre en estado PEND_ACEPTACION',
       });
     }
+    setNotaPedidoEdit(notaPedido)
+    setIsModalChangeStateOpen(true)
   }
 
   const columns: ColumnsType<NotaPedido> = [
@@ -137,6 +134,17 @@ export default function List() {
       render: (acciones, record) => (
         <div>
           <Popconfirm
+            title="Cambiar estado"
+            description="¿Está seguro que desea cambiar estado?"
+            onConfirm={() => confirmChangeStateNP(record)}
+            okText="Si"
+            cancelText="No"
+          >
+            <Button type="default" size="small" style={{padding: '0px'}}>
+              <ArrowPathRoundedSquareIcon style={{width: '24px', height: '24px'}} />
+            </Button>
+          </Popconfirm>
+          <Popconfirm
             title="Editar nota de pedido"
             onConfirm={() => confirmEditNP(record)}
             okText="Si"
@@ -144,17 +152,6 @@ export default function List() {
           >
             <Button type="default" size="small" style={{padding: '0px'}}>
               <PencilSquareIcon style={{width: '24px', height: '24px'}} />
-            </Button>
-          </Popconfirm>
-          <Popconfirm
-            title="Eliminar producto"
-            description="¿Está seguro que desea eliminar este producto?"
-            onConfirm={() => confirmDeleteProduct(record)}
-            okText="Si"
-            cancelText="No"
-          >
-            <Button type="default" size="small" style={{padding: '0px'}}>
-              <TrashIcon style={{width: '24px', height: '24px'}} />
             </Button>
           </Popconfirm>
         </div>
@@ -244,6 +241,15 @@ export default function List() {
           setNotaPedidoEdit={setNotaPedidoEdit} 
           isModalOpen={isModalOpen} 
           setIsModalOpen={setIsModalOpen} 
+          key={notaPedidoEdit?.id}
+        />
+      }
+      {isModalChangeStateOpen &&
+        <ChangeStateModal
+          isModalChangeStateOpen={isModalChangeStateOpen}
+          setIsModalChangeStateOpen={setIsModalChangeStateOpen}
+          notaPedido={notaPedidoEdit}
+          key={notaPedidoEdit?.id}
         />
       }
     </>

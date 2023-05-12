@@ -67,8 +67,8 @@ export const deleteNotaPedido = async (id: number) => {
   return data
 }
 
-export const updateStateNotaPedido = async (id: number, estado: number) => {
-  const { data } = await axios.put(`/compras/notas-pedido/${id}`, { estadoNPId: estado })
+export const updateStateNotaPedido = async (id: number, estadoNPId: number) => {
+  const { data } = await axios.put(`/compras/notas-pedido/${id}`, { estadoNPId })
   return data
 }
 
