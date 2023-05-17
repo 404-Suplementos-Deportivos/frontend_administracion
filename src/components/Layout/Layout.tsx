@@ -44,6 +44,9 @@ enum ROUTES {
   COMPRAS = '/compras',
   COMPRAS_LIST = '/compras/list',
   COMPRAS_PROVEEDORES = '/compras/proveedores',
+  VENTAS = '/ventas',
+  VENTAS_LIST = '/ventas/list',
+  VENTAS_CLIENTES = '/ventas/clientes',
   USUARIOS = '/users',
   USUARIOS_LIST = '/users',
   LOGOUT = '/logout'
@@ -128,9 +131,13 @@ const Layout = ({children, title, description=desc}: LayoutProps) => {
                   <Link href={ROUTES.COMPRAS_PROVEEDORES}>Proveedores</Link>
                 </Menu.Item>
               </Menu.SubMenu>
-              <Menu.SubMenu key="ventas" icon={<UserOutlined />} title="Ventas">
-                <Menu.Item key="5">Ventas</Menu.Item>
-                <Menu.Item key="6">Clientes</Menu.Item>
+              <Menu.SubMenu key={ROUTES.VENTAS} icon={<UserOutlined />} title="Ventas">
+                <Menu.Item key={ROUTES.VENTAS_LIST}>
+                  <Link href={ROUTES.VENTAS_LIST}>Listado</Link>
+                </Menu.Item>
+                <Menu.Item key={ROUTES.VENTAS_CLIENTES}>
+                  <Link href={ROUTES.VENTAS_CLIENTES}>Clientes</Link>
+                </Menu.Item>
               </Menu.SubMenu>
               <Menu.SubMenu key={ROUTES.PRODUCTOS} icon={<DesktopOutlined />} title="Productos">
                 <Menu.Item key={ROUTES.PRODUCTOS_LIST}>
