@@ -6,7 +6,7 @@ export default function list() {
       title="Listado de ventas"
     >
       <main>
-        <h2 style={{marginTop: 0}}>Órdenes</h2>
+        <h2 style={{marginTop: 0}}>Ordenes</h2>
       </main>
     </Layout>
   )
