@@ -12,14 +12,17 @@ import {
   NotificationOutlined,
   SettingOutlined
 } from '@ant-design/icons'
-import { Breadcrumb, Layout as LayoutComponent, Menu, theme, MenuProps, Button } from 'antd'
+import { Breadcrumb, Layout as LayoutComponent, Menu, Badge, notification } from 'antd'
 import { ROLES } from '@/interfaces/RolesEnum';
 import { useAppSelector, useAppDispatch } from '@/hooks/useReduxStore'
 import { setUsuarioAuth, setToken, clearUsuarioAuth } from '@/store/features/auth/authSlice'
 import { getProfile } from '@/services/authService'
+import { getStockMenorStockMinimo } from '@/services/reportesService'
 
 
 const { Header, Content, Footer, Sider } = LayoutComponent
+
+type NotificationType = 'success' | 'info' | 'warning' | 'error';
 
 interface LayoutProps {
   children: React.ReactNode | JSX.Element | JSX.Element[]
@@ -31,6 +34,7 @@ interface LayoutProps {
 interface LayoutState {
   collapsed: boolean
   selectedKey: string
+  productosStockMinimo: any
 }
 
 const desc: string = 'Panel de Admnistracion de Tienda 404 Suplementos Deportivos'
@@ -54,9 +58,11 @@ enum ROUTES {
 
 const Layout = ({children, title, description=desc}: LayoutProps) => {
   const [collapsed, setCollapsed] = useState<LayoutState['collapsed']>(false)
-  const router = useRouter()
   const [selectedKey, setSelectedKey] = useState<LayoutState['selectedKey']>('');
+  const [productosStockMinimo, setProductosStockMinimo] = useState<LayoutState['productosStockMinimo']>([])
+  const router = useRouter()
   const dispatch = useAppDispatch()
+  const [api, contextHolder] = notification.useNotification();
   const { token, usuario } = useAppSelector(state => state.auth)
 
   const { pathname } = router
@@ -81,6 +87,11 @@ const Layout = ({children, title, description=desc}: LayoutProps) => {
   }, [])
 
   useEffect(() => {
+    obtenerStockMenorStockMinimo()
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+
+  useEffect(() => {
     if(usuario && usuario.rol !== ROLES.ADMIN) {
       dispatch(clearUsuarioAuth())
       router.push('/login')
@@ -92,6 +103,34 @@ const Layout = ({children, title, description=desc}: LayoutProps) => {
     const path = pathname.split('/')[1]
     setSelectedKey('/' + path)
   }, [pathname])
+
+  const obtenerStockMenorStockMinimo = async () => {
+    try {
+      const { data } = await getStockMenorStockMinimo()
+      setProductosStockMinimo(data)
+      if(data.length > 0) {
+        openNotificationWithIcon('warning', data)
+      }
+    } catch (error: any) {
+      console.log( error.response.data.message )
+    }
+  }
+
+  const openNotificationWithIcon = (type: NotificationType, productos: any) => {
+    api[type]({
+      message: 'Alerta de Productos con Stock Minimo',
+      description: (
+        <div>
+          {productos.map((producto: any) => (
+            <div key={producto.id}>
+              #{producto.id} {producto.nombre} - Stock: {producto.stock} Min.({producto.stock_minimo})
+            </div>
+          ))}
+        </div>
+      ),
+      duration: 0,
+    });
+  };
 
   const handleLogout = () => {
     localStorage.removeItem('token')
@@ -163,7 +202,9 @@ const Layout = ({children, title, description=desc}: LayoutProps) => {
         </Sider>
         <LayoutComponent className="site-layout">
           <Header style={{ paddingRight: 40, display: 'flex', justifyContent: 'flex-end', alignItems: 'center', color: 'white', gap: 20}}>
-            <NotificationOutlined />
+            <Badge count={productosStockMinimo.length} size='small'>
+              <NotificationOutlined color='white' style={{color: 'white'}} onClick={() => openNotificationWithIcon('warning', productosStockMinimo)} />
+            </Badge>
             <SettingOutlined />
           </Header>
           <Content style={{ margin: '0 16px' }}>
@@ -172,6 +213,7 @@ const Layout = ({children, title, description=desc}: LayoutProps) => {
               <Breadcrumb.Item>{usuario?.nombre}</Breadcrumb.Item>
             </Breadcrumb>
             <div style={{ padding: 24, minHeight: 360}}>
+              {contextHolder}
               {children}
             </div>
           </Content>
