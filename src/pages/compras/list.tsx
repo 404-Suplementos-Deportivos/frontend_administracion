@@ -7,6 +7,7 @@ import { ArrowPathRoundedSquareIcon, PencilSquareIcon, TrashIcon } from '@heroic
 import Layout from "@/components/Layout/Layout"
 import NotaPedidoModal from "@/components/Compras/NotaPedidoModal";
 import ChangeStateModal from "@/components/Compras/ChangeStateModal";
+import ListadoComprasFilter from "@/components/Filters/ListadoComprasFilter";
 import { getNotasPedido } from "@/services/comprasService";
 import { NotaPedido } from "@/interfaces/NotaPedido";
 import { DetalleNotaPedido } from "@/interfaces/DetalleNotaPedido";
@@ -18,12 +19,14 @@ interface ListNotasPedidoState {
   isModalOpen: boolean;
   isModalChangeStateOpen: boolean;
   notasPedido: NotaPedido[] | undefined;
+  notasPedidoFiltered: NotaPedido[] | undefined;
   notaPedidoEdit: NotaPedido | null;
 }
 
 export default function List() {
   const [messageApi, contextHolder] = message.useMessage();
   const [notasPedido, setNotasPedido] = useState<ListNotasPedidoState['notasPedido']>();
+  const [notasPedidoFiltered, setNotasPedidoFiltered] = useState<ListNotasPedidoState['notasPedidoFiltered']>([]);
   const [notaPedidoEdit, setNotaPedidoEdit] = useState<ListNotasPedidoState['notaPedidoEdit']>(null)
 
   const [filteredInfo, setFilteredInfo] = useState<ListNotasPedidoState['filteredInfo']>({});
@@ -89,13 +92,13 @@ export default function List() {
       dataIndex: 'id',
       sorter: (a, b) => (a?.id || 0) - (b?.id || 0),
       render: (id) => id?.toString() || '',
-      width: '5%',
+      width: '10%',
     },
     {
       title: 'Versión',
       dataIndex: 'version',
       render: (version) => version || '-',    
-      width: '5%',
+      width: '10%',
     },
     {
       title: 'Fecha',
@@ -126,7 +129,7 @@ export default function List() {
       title: 'Tipo de Compra',
       dataIndex: 'tipoCompra',
       render: (estadoNP) => estadoNP || '-',
-      width: '10%',
+      width: '20%',
     },
     {
       title: 'Acciones',
@@ -219,8 +222,8 @@ export default function List() {
             <Button type="primary" onClick={handleOpenModal}>Generar Nota de Pedido</Button>
           </div>
           <div>
-            <div>Filtros</div>
-            <Table columns={columns} dataSource={notasPedido} onChange={handleChange} pagination={pagination} rowKey={'id'} expandable={{ 
+            <ListadoComprasFilter key={lastExpandedRowId} compras={notasPedido} comprasFiltered={notasPedidoFiltered} setComprasFiltered={setNotasPedidoFiltered} />
+            <Table columns={columns} dataSource={notasPedidoFiltered} onChange={handleChange} pagination={pagination} rowKey={'id'} expandable={{ 
               expandedRowRender: expandedRowRender,
               onExpand: (expanded, record) => {
                 if (expanded) {

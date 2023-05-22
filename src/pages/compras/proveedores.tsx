@@ -6,6 +6,7 @@ import type { FilterValue, SorterResult } from 'antd/es/table/interface';
 import { ArrowPathRoundedSquareIcon, PencilSquareIcon, TrashIcon } from '@heroicons/react/24/outline'
 import Layout from "@/components/Layout/Layout"
 import ProveedoresModal from "@/components/Compras/ProveedoresModal";
+import ListadoProveedoresFilter from "@/components/Filters/ListadoProveedoresFilter";
 import { getProveedores, deleteProveedor } from "@/services/comprasService"
 import { Proveedor } from "@/interfaces/Proveedor";
 import { TipoIVA } from "@/interfaces/TipoIVA";
@@ -16,12 +17,14 @@ interface ListProveedoresState {
   lastExpandedRowId: number | null | undefined;
   isModalOpen: boolean;
   proveedores: Proveedor[] | undefined;
+  proveedoresFiltered: Proveedor[] | undefined;
   proveedorEdit: Proveedor | null;
 }
 
 export default function Proveedores() {
   const [messageApi, contextHolder] = message.useMessage();
   const [proveedores, setProveedores] = useState<ListProveedoresState['proveedores']>();
+  const [proveedoresFiltered, setProveedoresFiltered] = useState<ListProveedoresState['proveedoresFiltered']>([]);
   const [proveedorEdit, setProveedorEdit] = useState<ListProveedoresState['proveedorEdit']>(null)
 
   const [filteredInfo, setFilteredInfo] = useState<ListProveedoresState['filteredInfo']>({});
@@ -183,8 +186,8 @@ export default function Proveedores() {
             <Button type="primary" onClick={handleOpenModal}>Crear Proveedor</Button>
           </div>
           <div>
-            <div>Filtros</div>
-            <Table columns={columns} dataSource={proveedores} onChange={handleChange} pagination={pagination} rowKey={'id'} expandable={{ 
+            <ListadoProveedoresFilter proveedores={proveedores} proveedoresFiltered={proveedoresFiltered} setProveedoresFiltered={setProveedoresFiltered} />
+            <Table columns={columns} dataSource={proveedoresFiltered} onChange={handleChange} pagination={pagination} rowKey={'id'} expandable={{ 
               expandedRowRender: expandedRowRender,
               onExpand: (expanded, record) => {
                 if (expanded) {

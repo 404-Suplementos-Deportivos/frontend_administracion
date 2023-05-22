@@ -90,7 +90,7 @@ export default function Ganancias() {
   return (
     <>
       <Layout
-        title="Productos"
+        title="Rentabilidad"
       >
         {contextHolder}
         <h2 style={{marginTop: 0}}>Rentabilidad</h2>
@@ -99,7 +99,6 @@ export default function Ganancias() {
             <Button type="primary" onClick={handleOpenModal}>Agregar Nueva Rentabilidad</Button>
           </div>
           <div>
-            <div>Filtros</div>
             <Table columns={columns} dataSource={ganancias} onChange={handleChange} pagination={pagination} rowKey={'id'} expandable={{ 
               onExpand: (expanded, record) => {
                 if (expanded) {

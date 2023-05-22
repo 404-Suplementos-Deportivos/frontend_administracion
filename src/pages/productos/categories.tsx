@@ -7,12 +7,14 @@ import { ArrowPathRoundedSquareIcon, PencilSquareIcon, TrashIcon, PlusCircleIcon
 import Layout from "@/components/Layout/Layout"
 import CategoriasModal from "@/components/Products/CategoriasModal";
 import SubcategoriasModal from "@/components/Products/SubcategoriasModal";
+import ListadoCategoriasFilter from "@/components/Filters/ListadoCategoriasFilter";
 import { getCategories, deleteCategory, getSubCategories, deleteSubCategory } from "@/services/productsService"
 import { Categoria } from "@/interfaces/Categoria";
 import { SubCategoria } from "@/interfaces/SubCategoria";
 
 interface CategoriesState {
   categories: Categoria[];
+  categoriasFiltered: Categoria[];
   categoryEdit: Categoria | null;
   subcategories: SubCategoria[];
   filteredInfo: Record<string, FilterValue | null>;
@@ -28,6 +30,7 @@ interface CategoriesState {
 export default function Categories() {
   const [messageApi, contextHolder] = message.useMessage();
   const [categories, setCategories] = useState<CategoriesState['categories']>();
+  const [categoriasFiltered, setCategoriasFiltered] = useState<CategoriesState['categoriasFiltered']>([]);
   const [categoryEdit, setCategoryEdit] = useState<CategoriesState['categoryEdit']>(null);
   const [subcategories, setSubcategories] = useState<CategoriesState['subcategories']>();
   const [filteredInfo, setFilteredInfo] = useState<CategoriesState['filteredInfo']>({});
@@ -268,7 +271,8 @@ export default function Categories() {
             <Button type="primary" onClick={handleOpenModal}>Crear Categoría</Button>
           </div>
           <div>
-            <Table columns={columns} dataSource={categories} onChange={handleChange} pagination={pagination} rowKey={'id'} expandable={{ 
+            <ListadoCategoriasFilter categorias={categories} categoriasFiltered={categoriasFiltered} setCategoriasFiltered={setCategoriasFiltered} />
+            <Table columns={columns} dataSource={categoriasFiltered} onChange={handleChange} pagination={pagination} rowKey={'id'} expandable={{ 
               expandedRowRender: expandedRowRender,
               onExpand: async (expanded, record) => {
                 if (expanded) {

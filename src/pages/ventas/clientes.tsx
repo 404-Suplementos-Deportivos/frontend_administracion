@@ -4,11 +4,13 @@ import type { ColumnsType, TablePaginationConfig } from 'antd/es/table';
 import type { FilterValue, SorterResult } from 'antd/es/table/interface';
 import { ArrowPathRoundedSquareIcon, PencilSquareIcon, TrashIcon } from '@heroicons/react/24/outline'
 import Layout from "@/components/Layout/Layout"
+import ListadoClientesFilter from "@/components/Filters/ListadoClientesFilter";
 import { getClientes, deleteUser } from "@/services/ventasService"
 import { Cliente } from "@/interfaces/Cliente";
 
 interface ListClientesState {
   clientes: Cliente[]
+  clientesFiltered: Cliente[]
   filteredInfo: Record<string, FilterValue | null>;
   sortedInfo: SorterResult<Cliente>;
   lastExpandedRowId: number | null | undefined;
@@ -19,6 +21,7 @@ interface ListClientesState {
 export default function Clientes() {
   const [messageApi, contextHolder] = message.useMessage();
   const [clientes, setClientes] = useState<ListClientesState['clientes']>([])
+  const [clientesFiltered, setClientesFiltered] = useState<ListClientesState['clientesFiltered']>([]);
 
   const [filteredInfo, setFilteredInfo] = useState<ListClientesState['filteredInfo']>({});
   const [sortedInfo, setSortedInfo] = useState<ListClientesState['sortedInfo']>({});
@@ -137,8 +140,8 @@ export default function Clientes() {
           <h2 style={{marginTop: 0}}>Clientes</h2>
           <div style={{display: 'flex', flexDirection: 'column', width: '100%'}}>
             <div>
-              <div>Filtros</div>
-              <Table columns={columns} dataSource={clientes} onChange={handleChange} pagination={pagination} rowKey={'id'} />
+              <ListadoClientesFilter clientes={clientes} clientesFiltered={clientesFiltered} setClientesFiltered={setClientesFiltered} />
+              <Table columns={columns} dataSource={clientesFiltered} onChange={handleChange} pagination={pagination} rowKey={'id'} />
             </div>
           </div>
         </main>

@@ -6,11 +6,13 @@ import type { FilterValue, SorterResult } from 'antd/es/table/interface';
 import { CheckBadgeIcon, PencilSquareIcon, TrashIcon } from '@heroicons/react/24/outline'
 import Layout from "@/components/Layout/Layout"
 import UsuariosModal from "@/components/Users/UsuariosModal";
+import ListadoUsuariosFilter from "@/components/Filters/ListadoUsuariosFilter";
 import { getUsers, deleteUser, confirmAccount } from "@/services/usersService";
 import { User } from "@/interfaces/User";
 
 interface UsersState {
   users: User[];
+  usersFiltered: User[];
   filteredInfo: Record<string, FilterValue | null>;
   sortedInfo: SorterResult<User>
   lastExpandedRowId: number | null | undefined,
@@ -21,6 +23,7 @@ interface UsersState {
 export default function Users() {
   const [messageApi, contextHolder] = message.useMessage();
   const [users, setUsers] = useState<User[]>();
+  const [usersFiltered, setUsersFiltered] = useState<UsersState['usersFiltered']>([]);
   const [filteredInfo, setFilteredInfo] = useState<UsersState['filteredInfo']>({});
   const [sortedInfo, setSortedInfo] = useState<UsersState['sortedInfo']>({});
   const [lastExpandedRowId, setLastExpandedRowId] = useState<UsersState['lastExpandedRowId']>(null);
@@ -209,8 +212,8 @@ export default function Users() {
             <Button type="primary" onClick={handleOpenModal}>Nuevo Usuario</Button>
           </div>
           <div>
-            <div>Filtros</div>
-            <Table columns={columns} dataSource={users} onChange={handleChange} pagination={pagination} rowKey={'id'} expandable={{ 
+            <ListadoUsuariosFilter usuarios={users} usuariosFiltered={usersFiltered} setUsuariosFiltered={setUsersFiltered} />
+            <Table columns={columns} dataSource={usersFiltered} onChange={handleChange} pagination={pagination} rowKey={'id'} expandable={{ 
               expandedRowRender: expandedRowRender,
               onExpand: (expanded, record) => {
                 if (expanded) {

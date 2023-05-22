@@ -5,6 +5,7 @@ import type { FilterValue, SorterResult } from 'antd/es/table/interface';
 import { ArrowPathRoundedSquareIcon, PencilSquareIcon, TrashIcon } from '@heroicons/react/24/outline'
 import Layout from "@/components/Layout/Layout"
 import ChangeStateModal from "@/components/Ventas/ChangeStateModal";
+import ListadoVentasFilter from "@/components/Filters/ListadoVentasFilter";
 import { getComprobantes, getEstados } from "@/services/ventasService"
 import { Comprobante } from "@/interfaces/Comprobante"
 import { DetalleComprobante } from "@/interfaces/DetalleComprobante";
@@ -12,6 +13,7 @@ import { EstadoComprobante } from "@/interfaces/EstadoComprobante";
 
 interface ListOrdenesState {
   orders: Comprobante[]
+  ordersFiltered: Comprobante[]
   estados: EstadoComprobante[]
   filteredInfo: Record<string, FilterValue | null>;
   sortedInfo: SorterResult<Comprobante>;
@@ -24,6 +26,7 @@ interface ListOrdenesState {
 export default function List() {
   const [messageApi, contextHolder] = message.useMessage();
   const [orders, setOrders] = useState<ListOrdenesState['orders']>([])
+  const [ordersFiltered, setOrdersFiltered] = useState<ListOrdenesState['ordersFiltered']>([])
   const [orderEdit, setOrderEdit] = useState<ListOrdenesState['orderEdit']>(null)
   const [estados, setEstados] = useState<ListOrdenesState['estados']>([])
 
@@ -169,8 +172,8 @@ export default function List() {
           <h2 style={{marginTop: 0}}>Ordenes</h2>
           <div style={{display: 'flex', flexDirection: 'column', width: '100%'}}>
             <div>
-              <div>Filtros</div>
-              <Table columns={columns} dataSource={orders} onChange={handleChange} pagination={pagination} rowKey={'id'} expandable={{ 
+              <ListadoVentasFilter ventas={orders} ventasFiltered={ordersFiltered} setVentasFiltered={setOrdersFiltered} />
+              <Table columns={columns} dataSource={ordersFiltered} onChange={handleChange} pagination={pagination} rowKey={'id'} expandable={{ 
                 expandedRowRender: expandedRowRender,
                 onExpand: (expanded, record) => {
                   if (expanded) {

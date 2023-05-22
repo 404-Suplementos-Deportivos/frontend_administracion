@@ -6,6 +6,7 @@ import type { FilterValue, SorterResult } from 'antd/es/table/interface';
 import { ArrowPathRoundedSquareIcon, PencilSquareIcon, TrashIcon } from '@heroicons/react/24/outline'
 import Layout from "@/components/Layout/Layout"
 import ProductsModal from "@/components/Products/ProductsModal";
+import ListadoProductosFilter from "@/components/Filters/ListadoProductosFilter";
 import { getProducts, deleteProduct } from "@/services/productsService"
 import { Producto } from "@/interfaces/Producto";
 import { Categoria } from "@/interfaces/Categoria";
@@ -18,12 +19,14 @@ interface ListProductosState {
   isModalOpen: boolean;
   productos: Producto[] | undefined;
   productoEdit: Producto | null;
+  productosFiltered: Producto[] | undefined;
 }
 
 export default function ListProductos() {
   const [messageApi, contextHolder] = message.useMessage();
   const [productos, setProducts] = useState<ListProductosState['productos']>();
   const [productoEdit, setProductoEdit] = useState<ListProductosState['productoEdit']>(null)
+  const [productosFiltered, setProductosFiltered] = useState<ListProductosState['productosFiltered']>([]);
 
   const [filteredInfo, setFilteredInfo] = useState<ListProductosState['filteredInfo']>({});
   const [sortedInfo, setSortedInfo] = useState<ListProductosState['sortedInfo']>({});
@@ -200,8 +203,8 @@ export default function ListProductos() {
             <Button type="primary" onClick={handleOpenModal}>Crear Producto</Button>
           </div>
           <div>
-            <div>Filtros</div>
-            <Table columns={columns} dataSource={productos} onChange={handleChange} pagination={pagination} rowKey={'id'} expandable={{ 
+            <ListadoProductosFilter productos={productos} productosFiltered={productosFiltered} setProductosFiltered={setProductosFiltered} />
+            <Table columns={columns} dataSource={productosFiltered} onChange={handleChange} pagination={pagination} rowKey={'id'} expandable={{ 
               expandedRowRender: expandedRowRender,
               onExpand: (expanded, record) => {
                 if (expanded) {
