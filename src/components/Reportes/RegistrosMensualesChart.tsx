@@ -51,6 +51,7 @@ const RegistrosMensualesChart = ({registrosMensuales}: RegistrosMensualesChartPr
         data: registrosMensuales.map(registro => registro.cantidadUsuarios),
         fill: false,
         borderColor: '#111a2c',
+        pointBackgroundColor: '#f79310',
         tension: 0.1,
       },
     ],
