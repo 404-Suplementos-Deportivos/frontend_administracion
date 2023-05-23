@@ -152,11 +152,11 @@ const Layout = ({children, title, description=desc}: LayoutProps) => {
         <Sider collapsible collapsed={collapsed} onCollapse={(value) => setCollapsed(value)}>
           <div style={{ height: '64px'}}>
             <Link href='/'>
-              <Image src={'/404_Icono.png'} alt='Logo' width={64} height={64} style={{width: '100%', objectFit: 'contain'}} />
+              <Image src={'/404_Icono.png'} alt='Logo' width={64} height={64} style={{width: '100%', objectFit: 'contain', filter: 'invert(100%)'}} />
             </Link>
           </div>
           {selectedKey ? (
-            <Menu theme="dark" mode="inline" inlineCollapsed={collapsed} defaultSelectedKeys={[pathname]} selectedKeys={[pathname]} defaultOpenKeys={[selectedKey]}>
+            <Menu theme="dark" mode="inline" inlineCollapsed={collapsed} defaultSelectedKeys={[pathname]} selectedKeys={[pathname]} defaultOpenKeys={[selectedKey]} style={{position: 'sticky', top: '0', right: '0', left: '0'}}>
               <Menu.Item key={ROUTES.DASHBOARD} icon={<PieChartOutlined />}>
                 <Link href={ROUTES.DASHBOARD}>
                   Dashboard

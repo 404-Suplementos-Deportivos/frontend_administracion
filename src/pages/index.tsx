@@ -1,44 +1,92 @@
-import { useState } from 'react';
-import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js';
-import { Pie } from 'react-chartjs-2';
+import { useState, useEffect } from 'react';
 import Layout from "@/components/Layout/Layout"
+import ReportesFilter from '@/components/Reportes/ReportesFilter';
+import ListLastSells from '@/components/Reportes/ListLastSells';
+import RegistrosMensualesChart from '@/components/Reportes/RegistrosMensualesChart';
+import PieChart from '@/components/Reportes/PieChart';
+import { LastSells } from '@/interfaces/Reportes/LastSells';
+import { RegistroMensual } from '@/interfaces/Reportes/RegistrosMensuales';
+import { getLastSells, getLastRegisterMensual } from '@/services/reportesService';
 
-ChartJS.register(ArcElement, Tooltip, Legend);
-
-export const data = {
-  labels: ['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange'],
-  datasets: [
-    {
-      label: '# of Votes',
-      data: [12, 19, 3, 5, 2, 3],
-      backgroundColor: [
-        'rgba(255, 99, 132, 0.2)',
-        'rgba(54, 162, 235, 0.2)',
-        'rgba(255, 206, 86, 0.2)',
-        'rgba(75, 192, 192, 0.2)',
-        'rgba(153, 102, 255, 0.2)',
-        'rgba(255, 159, 64, 0.2)',
-      ],
-      borderColor: [
-        'rgba(255, 99, 132, 1)',
-        'rgba(54, 162, 235, 1)',
-        'rgba(255, 206, 86, 1)',
-        'rgba(75, 192, 192, 1)',
-        'rgba(153, 102, 255, 1)',
-        'rgba(255, 159, 64, 1)',
-      ],
-      borderWidth: 1,
-    },
-  ],
-};
+interface HomeState {
+  lastSells: LastSells[]
+  registrosMensuales: RegistroMensual[]
+  fechaDesde: string
+  fechaHasta: string
+}
 
 export default function Home() {
+  const [lastSells, setLastSells] = useState<HomeState['lastSells']>([])
+  const [registrosMensuales, setRegistrosMensuales] = useState<HomeState['registrosMensuales']>([])
+  const [fechaDesde, setFechaDesde] = useState<HomeState['fechaDesde']>('')
+  const [fechaHasta, setFechaHasta] = useState<HomeState['fechaHasta']>('')
+
+  useEffect(() => {
+    Promise.all([
+      obtenerUltimasVentas(),
+      obtenerUltimosRegistrosMensuales()
+    ])
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [fechaDesde, fechaHasta])
+
+  const obtenerUltimasVentas = async () => {
+    try {
+      const response = await getLastSells();
+      setLastSells(response.data)
+    } catch (error: any) {
+      console.log( error.response.data.message )
+    }
+  }
+
+  const obtenerUltimosRegistrosMensuales = async () => {
+    try {
+      const response = await getLastRegisterMensual({ fechaDesde, fechaHasta});
+      setRegistrosMensuales(response.data)
+    } catch (error: any) {
+      console.log( error.response.data.message )
+    }
+  }
+
   return (
     <Layout
       title="Inicio"
     >
-      <main>
-        <Pie data={data} />
+      <main style={{
+        
+      }}>
+        <ReportesFilter 
+          fechaDesde={fechaDesde}
+          setFechaDesde={setFechaDesde}
+          fechaHasta={fechaHasta}
+          setFechaHasta={setFechaHasta}
+        />
+        <div style={{
+          display: 'grid',
+          gridTemplateColumns: 'repeat(6, 1fr)',
+          gap: '3rem'
+        }}>
+          <div style={{
+            gridColumn: '1 / 3',
+            gridRow: '1 / 3',
+            width: '100%',
+          }}>
+            <ListLastSells lastSells={lastSells} />
+          </div>
+          <div style={{
+            gridColumn: '3 / 7',
+            gridRow: '1 / 3',
+            width: '100%',
+          }}>
+            <RegistrosMensualesChart registrosMensuales={registrosMensuales} />
+          </div>
+          <div style={{
+            gridColumn: '1 / 7',
+            gridRow: '3 / 4',
+            width: '100%',
+          }}>
+            <PieChart />
+          </div>
+        </div>
       </main>
     </Layout>
   )

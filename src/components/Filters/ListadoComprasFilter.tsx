@@ -29,7 +29,6 @@ interface SelectOption {
 
 const { RangePicker } = DatePicker;
 
-
 const ListadoComprasFilter = ({compras, comprasFiltered, setComprasFiltered}: ListadoComprasFilterProps) => {
   const [search, setSearch] = useState<ListadoComprasFilterState['search']>('')
   const [fechaDesde, setFechaDesde] = useState<ListadoComprasFilterState['fechaDesde']>('')
