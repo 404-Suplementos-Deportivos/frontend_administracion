@@ -15,3 +15,18 @@ export const getLastRegisterMensual = async ({fechaDesde, fechaHasta}: {fechaDes
   const { data } = await axios.post('/reportes/last-registers', {fechaDesde, fechaHasta})
   return data
 }
+
+export const getLastSellsBuys = async ({fechaDesde, fechaHasta}: {fechaDesde: string, fechaHasta: string}): Promise<any> => {
+  const { data } = await axios.post('/reportes/last-sells-buys', {fechaDesde, fechaHasta})
+  return data
+}
+
+export const getCategorySells = async ({fechaDesde, fechaHasta}: {fechaDesde: string, fechaHasta: string}): Promise<any> => {
+  const { data } = await axios.post('/reportes/category-sells', {fechaDesde, fechaHasta})
+  return data
+}
+
+export const getMostSelledProducts = async ({fechaDesde, fechaHasta}: {fechaDesde: string, fechaHasta: string}): Promise<any> => {
+  const { data } = await axios.post('/reportes/most-selled-products', {fechaDesde, fechaHasta})
+  return data
+}

@@ -20,7 +20,10 @@ const ReportesFilter = ({fechaDesde, fechaHasta, setFechaDesde, setFechaHasta}: 
       marginBottom: '1rem',
       backgroundColor: 'white',
       padding: '10px 20px',
-      borderRadius: '10px'
+      borderRadius: '10px',
+      position: 'sticky',
+      top: '20px',
+      zIndex: 1,
     }} >
       <div style={{display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: '10px'}}>
         <div>
@@ -35,7 +38,7 @@ const ReportesFilter = ({fechaDesde, fechaHasta, setFechaDesde, setFechaHasta}: 
       </div>
       <div style={{display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: '10px'}}>
         <div>
-          <span style={{marginRight: '0.5rem'}}>Estado de compra:</span>
+          <span style={{marginRight: '0.5rem'}}>Tipo de cliente:</span>
           <select
             style={{width: '200px'}}
             name="estado"
@@ -44,7 +47,7 @@ const ReportesFilter = ({fechaDesde, fechaHasta, setFechaDesde, setFechaHasta}: 
           </select>
         </div>
         <div>
-          <span style={{marginRight: '0.5rem'}}>Tipo de compra:</span>
+          <span style={{marginRight: '0.5rem'}}>Categoría:</span>
           <select
             style={{width: '200px'}}
             name="tipoCompra"
