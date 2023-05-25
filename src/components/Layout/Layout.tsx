@@ -108,11 +108,15 @@ const Layout = ({children, title, description=desc}: LayoutProps) => {
     try {
       const { data } = await getStockMenorStockMinimo()
       setProductosStockMinimo(data)
-      if(data.length > 0) {
-        openNotificationWithIcon('warning', data)
-      }
+      
     } catch (error: any) {
       console.log( error.response.data.message )
+    }
+  }
+
+  const mostrarAlerta = () => {
+    if(productosStockMinimo.length > 0) {
+      openNotificationWithIcon('warning', productosStockMinimo)
     }
   }
 
@@ -203,7 +207,7 @@ const Layout = ({children, title, description=desc}: LayoutProps) => {
         <LayoutComponent className="site-layout">
           <Header style={{ paddingRight: 40, display: 'flex', justifyContent: 'flex-end', alignItems: 'center', color: 'white', gap: 20}}>
             <Badge count={productosStockMinimo.length} size='small'>
-              <NotificationOutlined color='white' style={{color: 'white'}} onClick={() => openNotificationWithIcon('warning', productosStockMinimo)} />
+              <NotificationOutlined color='white' style={{color: 'white'}} onClick={() => mostrarAlerta()} />
             </Badge>
             <SettingOutlined />
           </Header>

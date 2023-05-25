@@ -41,7 +41,7 @@ const CantidadVentasCategoriaChart = ({cantidadVentasCategoria}: CantidadVentasC
   };
 
   return (
-    <Pie data={data} />
+    <Pie data={data} height={'100%'} />
   )
 }
 
