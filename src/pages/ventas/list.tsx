@@ -2,7 +2,8 @@ import { useState, useEffect } from "react"
 import { message, Button, Table, TableProps, Popconfirm } from "antd"
 import type { ColumnsType, TablePaginationConfig } from 'antd/es/table';
 import type { FilterValue, SorterResult } from 'antd/es/table/interface';
-import { ArrowPathRoundedSquareIcon, PencilSquareIcon, TrashIcon } from '@heroicons/react/24/outline'
+import { PDFDownloadLink } from '@react-pdf/renderer';
+import { ArrowPathRoundedSquareIcon, ArrowDownTrayIcon } from '@heroicons/react/24/outline'
 import Layout from "@/components/Layout/Layout"
 import ChangeStateModal from "@/components/Ventas/ChangeStateModal";
 import ListadoVentasFilter from "@/components/Filters/ListadoVentasFilter";
@@ -10,6 +11,7 @@ import { getComprobantes, getEstados } from "@/services/ventasService"
 import { Comprobante } from "@/interfaces/Comprobante"
 import { DetalleComprobante } from "@/interfaces/DetalleComprobante";
 import { EstadoComprobante } from "@/interfaces/EstadoComprobante";
+import ComprobantePagoPDF from "@/utils/generateComprobantePagoPDF";
 
 interface ListOrdenesState {
   orders: Comprobante[]
@@ -55,6 +57,10 @@ export default function List() {
     setFilteredInfo(filters);
     setSortedInfo(sorter as SorterResult<Comprobante>);
   };
+
+  const handleGenerateComprobantePagoPDF = () => {
+
+  }
 
   const confirmChangeStateComprobante = async (comprobante: Comprobante) => {
     if(comprobante.estadoFactura === 'PAGADA') {
@@ -105,6 +111,16 @@ export default function List() {
       dataIndex: 'acciones',
       render: (acciones, record) => (
         <div>
+          {record.estadoFactura === 'PAGADA' && (
+            <PDFDownloadLink
+              document={<ComprobantePagoPDF comprobante={record} />}
+              fileName={`ComprobantePago_${record.numeroFactura}.pdf`}
+            >
+              <Button type="default" size="small" style={{ padding: '0px', marginRight: '10px' }}>
+                <ArrowDownTrayIcon style={{ width: '24px', height: '24px' }} />
+              </Button>
+            </PDFDownloadLink>
+          )}
           <Popconfirm
             title="Cambiar estado"
             description="¿Está seguro que desea cambiar estado?"

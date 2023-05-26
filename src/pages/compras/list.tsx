@@ -3,7 +3,8 @@ import Link from "next/link"
 import { message, Button, Table, TableProps, Popconfirm } from "antd"
 import type { ColumnsType, TablePaginationConfig } from 'antd/es/table';
 import type { FilterValue, SorterResult } from 'antd/es/table/interface';
-import { ArrowPathRoundedSquareIcon, PencilSquareIcon, TrashIcon } from '@heroicons/react/24/outline'
+import { PDFDownloadLink } from '@react-pdf/renderer';
+import { ArrowPathRoundedSquareIcon, PencilSquareIcon, ArrowDownTrayIcon } from '@heroicons/react/24/outline'
 import Layout from "@/components/Layout/Layout"
 import NotaPedidoModal from "@/components/Compras/NotaPedidoModal";
 import ChangeStateModal from "@/components/Compras/ChangeStateModal";
@@ -11,6 +12,7 @@ import ListadoComprasFilter from "@/components/Filters/ListadoComprasFilter";
 import { getNotasPedido } from "@/services/comprasService";
 import { NotaPedido } from "@/interfaces/NotaPedido";
 import { DetalleNotaPedido } from "@/interfaces/DetalleNotaPedido";
+import NotaPedidoPDF from "@/utils/generateNotaPedidoPDF";
 
 interface ListNotasPedidoState {
   filteredInfo: Record<string, FilterValue | null>;
@@ -136,6 +138,16 @@ export default function List() {
       dataIndex: 'acciones',
       render: (acciones, record) => (
         <div>
+          {record.estadoNP === 'CERRADA' && (
+            <PDFDownloadLink
+              document={<NotaPedidoPDF notaPedido={record} />}
+              fileName={`NotaPedido_${record.id}.pdf`}
+            >
+              <Button type="default" size="small" style={{ padding: '0px', marginRight: '10px' }}>
+                <ArrowDownTrayIcon style={{ width: '24px', height: '24px' }} />
+              </Button>
+            </PDFDownloadLink>
+          )}
           <Popconfirm
             title="Cambiar estado"
             description="¿Está seguro que desea cambiar estado?"
@@ -143,7 +155,7 @@ export default function List() {
             okText="Si"
             cancelText="No"
           >
-            <Button type="default" size="small" style={{padding: '0px'}}>
+            <Button type="default" size="small" style={{padding: '0px', marginRight: '10px'}}>
               <ArrowPathRoundedSquareIcon style={{width: '24px', height: '24px'}} />
             </Button>
           </Popconfirm>

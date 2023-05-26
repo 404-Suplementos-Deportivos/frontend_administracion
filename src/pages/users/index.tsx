@@ -133,7 +133,7 @@ export default function Users() {
             okText="Si"
             cancelText="No"
           >
-            <Button type="default" size="small" style={{padding: '0px'}}>
+            <Button type="default" size="small" style={{padding: '0px', marginRight: '10px'}}>
               <CheckBadgeIcon style={{width: '24px', height: '24px'}} />
             </Button>
           </Popconfirm>
@@ -143,7 +143,7 @@ export default function Users() {
             okText="Si"
             cancelText="No"
           >
-            <Button type="default" size="small" style={{padding: '0px'}}>
+            <Button type="default" size="small" style={{padding: '0px', marginRight: '10px'}}>
               <PencilSquareIcon style={{width: '24px', height: '24px'}} />
             </Button>
           </Popconfirm>

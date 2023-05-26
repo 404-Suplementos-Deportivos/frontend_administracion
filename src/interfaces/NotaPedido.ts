@@ -7,6 +7,9 @@ export interface NotaPedido {
   fechaVencimiento: string;
   usuario: string;
   proveedor: string;
+  proveedorDireccion?: string;
+  proveedorEmail?: string;
+  proveedorTelefono?: string;
   proveedorId?: number;
   estadoNP: string;
   estadoNPId?: number;
