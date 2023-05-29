@@ -41,7 +41,7 @@ export default function Proveedores() {
       const response = await getProveedores()
       setProveedores(response)
     } catch (error: any) {
-      console.log(error.response.data.message)
+      console.log(error.response?.data?.message ?? 'Error al obtener proveedores')
     }
   }
 
@@ -71,7 +71,7 @@ export default function Proveedores() {
     } catch (error: any) {
       messageApi.open({
         type: 'warning',
-        content: error.response.data.message,
+        content: error.response?.data?.message ?? 'Error al eliminar proveedor',
       });
     }
   }

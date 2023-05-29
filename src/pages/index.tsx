@@ -74,7 +74,7 @@ export default function Home() {
       const response = await getLastSells();
       setLastSells(response.data)
     } catch (error: any) {
-      console.log( error.response.data.message )
+      console.log( error.response?.data?.message ?? 'Error al obtener las últimas ventas' )
     }
   }
 
@@ -83,7 +83,7 @@ export default function Home() {
       const response = await getLastRegisterMensual({ fechaDesde, fechaHasta, tipoUsuario: Number(tipoUsuarioSelected)});
       setRegistrosMensuales(response.data)
     } catch (error: any) {
-      console.log( error.response.data.message )
+      console.log( error.response?.data?.message ?? 'Error al obtener los últimos registros mensuales' )
     }
   }
 
@@ -93,7 +93,7 @@ export default function Home() {
       setCompras(response.compras)
       setVentas(response.ventas)
     } catch (error: any) {
-      console.log( error.response.data.message )
+      console.log( error.response?.data?.message ?? 'Error al obtener las compras y ventas' )
     }
   }
 
@@ -102,7 +102,7 @@ export default function Home() {
       const response = await getCategorySells({ fechaDesde, fechaHasta });
       setCantidadVentasCategoria(response.data)
     } catch (error: any) {
-      console.log( error.response.data.message )
+      console.log( error.response?.data?.message ?? 'Error al obtener la cantidad de ventas por categoría' )
     }
   }
 
@@ -111,7 +111,7 @@ export default function Home() {
       const response = await getMostSelledProducts({ fechaDesde, fechaHasta, tipoCategoria: Number(categoriaSelected) });
       setMostSelledProducts(response.data)
     } catch (error: any) {
-      console.log( error.response.data.message )
+      console.log( error.response?.data?.message ?? 'Error al obtener los productos más vendidos' )
     }
   }
 
@@ -120,7 +120,7 @@ export default function Home() {
       const response = await getTiposUsuarios();
       setTiposUsuario(response.data)
     } catch (error: any) {
-      console.log( error.response.data.message )
+      console.log( error.response?.data?.message ?? 'Error al obtener los tipos de usuarios' )
     }
   }
 
@@ -129,7 +129,7 @@ export default function Home() {
       const response = await getCategorias();
       setCategorias(response.data)
     } catch (error: any) {
-      console.log( error.response.data.message )
+      console.log( error.response?.data?.message ?? 'Error al obtener las categorías' )
     }
   }
 
@@ -140,7 +140,7 @@ export default function Home() {
         openNotificationWithIcon('warning', data)
       }
     } catch (error: any) {
-      console.log( error.response.data.message )
+      console.log( error.response?.data?.message ?? 'Error al obtener los productos con stock menor al stock minimo' )
     }
   }
 

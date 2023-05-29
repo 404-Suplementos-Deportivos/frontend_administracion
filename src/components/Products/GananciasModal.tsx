@@ -38,7 +38,7 @@ const GananciasModal = ({isModalOpen, setIsModalOpen}: GananciasModalProps) => {
     } catch (error: any) {
       messageApi.open({
         type: 'warning',
-        content: error.response.data.message,
+        content: error.response?.data?.message ?? 'Error al crear ganancia'
       });
     }
   };

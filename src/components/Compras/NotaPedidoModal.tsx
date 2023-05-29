@@ -144,7 +144,7 @@ const NotaPedidoModal = ({isModalOpen, setIsModalOpen, notaPedidoEdit, setNotaPe
     } catch (error: any) {
       messageApi.open({
         type: 'warning',
-        content: error.response.data.message,
+        content: error.response?.data?.message ?? 'Error al obtener proveedores',
       });
     }
   }
@@ -156,7 +156,7 @@ const NotaPedidoModal = ({isModalOpen, setIsModalOpen, notaPedidoEdit, setNotaPe
     } catch (error: any) {
       messageApi.open({
         type: 'warning',
-        content: error.response.data.message,
+        content: error.response?.data?.message ?? 'Error al obtener productos',
       });
     }
   }
@@ -210,7 +210,7 @@ const NotaPedidoModal = ({isModalOpen, setIsModalOpen, notaPedidoEdit, setNotaPe
     } catch (error: any) {
       messageApi.open({
         type: 'warning',
-        content: error.response.data.message,
+        content: error.response?.data?.message ?? 'Error al crear nota de pedido',
       });
     }
   }
@@ -227,7 +227,7 @@ const NotaPedidoModal = ({isModalOpen, setIsModalOpen, notaPedidoEdit, setNotaPe
     } catch (error: any) {
       messageApi.open({
         type: 'warning',
-        content: error.response.data.message,
+        content: error.response?.data?.message ?? 'Error al actualizar nota de pedido',
       });
     }
   }

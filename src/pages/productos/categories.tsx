@@ -104,7 +104,7 @@ export default function Categories() {
       message.success({ content: response.message, key: 'deleteCategory', duration: 3 });
       fetchCategories()
     } catch (error: any) {
-      message.error({ content: error.response.data.message , key: 'deleteCategory', duration: 3 });
+      message.error({ content: error.response?.data?.message ?? 'Error al eliminar categoría' , key: 'deleteCategory', duration: 3 });
     }
   };
 
@@ -125,7 +125,7 @@ export default function Categories() {
       fetchCategories()
       fetchSubcategories(actualCategory as number)
     } catch (error: any) {
-      message.error({ content: error.response.data.message , key: 'deleteSubcategory', duration: 3 });
+      message.error({ content: error.response?.data?.message ?? 'Error al eliminar subcategoría' , key: 'deleteSubcategory', duration: 3 });
     }
   };
 

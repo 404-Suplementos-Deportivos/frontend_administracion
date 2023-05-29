@@ -107,7 +107,7 @@ const ProveedoresModal = ({isModalOpen, setIsModalOpen, proveedorEdit, setProvee
     } catch (error: any) {
       messageApi.open({
         type: 'warning',
-        content: error.response.data.message,
+        content: error.response?.data?.message ?? 'Error al crear el proveedor',
       });
     }
   }
@@ -124,7 +124,7 @@ const ProveedoresModal = ({isModalOpen, setIsModalOpen, proveedorEdit, setProvee
     } catch (error: any) {
       messageApi.open({
         type: 'warning',
-        content: error.response.data.message,
+        content: error.response?.data?.message ?? 'Error al actualizar el proveedor',
       });
     }
   }

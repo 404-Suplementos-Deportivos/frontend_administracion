@@ -75,7 +75,7 @@ const Layout = ({children, title, description=desc}: LayoutProps) => {
           const data = await getProfile()
           dispatch(setUsuarioAuth(data))
         } catch (error: any) {
-          console.log( error.response.data.message )
+          console.log( error.response?.data?.message ?? 'Error al obtener perfil' )
         }
       }
       getProfileData()
@@ -110,7 +110,7 @@ const Layout = ({children, title, description=desc}: LayoutProps) => {
       setProductosStockMinimo(data)
       
     } catch (error: any) {
-      console.log( error.response.data.message )
+      console.log( error.response?.data?.message ?? 'Error al obtener productos con stock minimo' )
     }
   }
 

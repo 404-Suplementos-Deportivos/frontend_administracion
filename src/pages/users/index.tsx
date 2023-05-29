@@ -68,7 +68,7 @@ export default function Users() {
       message.success({ content: response.message, key: 'deleteUser', duration: 3 });
       fetchUsers()
     } catch (error: any) {
-      message.error({ content: error.response.data.message , key: 'deleteUser', duration: 3 });
+      message.error({ content: error.response?.data?.message ?? 'Error al eliminar usuario', key: 'deleteUser', duration: 3 });
     }
   };
 
@@ -78,7 +78,7 @@ export default function Users() {
       message.success({ content: response.message, key: 'accountUser', duration: 3 });
       fetchUsers()
     } catch (error: any) {
-      message.error({ content: error.response.data.message , key: 'accountUser', duration: 3 });
+      message.error({ content: error.response?.data?.message ?? 'Error al confirmar cuenta de usuario' , key: 'accountUser', duration: 3 });
     }
   };
 

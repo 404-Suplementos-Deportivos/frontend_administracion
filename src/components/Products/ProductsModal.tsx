@@ -141,7 +141,7 @@ const ProductsModal = ({productoEdit, setProductoEdit, isModalOpen, setIsModalOp
     } catch (error: any) {
       messageApi.open({
         type: 'warning',
-        content: error.response.data.message,
+        content: error.response?.data?.message ?? 'Error al crear el producto',
       });
     }
   }
@@ -158,7 +158,7 @@ const ProductsModal = ({productoEdit, setProductoEdit, isModalOpen, setIsModalOp
     } catch (error: any) {
       messageApi.open({
         type: 'warning',
-        content: error.response.data.message,
+        content: error.response?.data?.message ?? 'Error al actualizar el producto',
       });
     }
   }

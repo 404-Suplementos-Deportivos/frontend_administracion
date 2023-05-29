@@ -56,7 +56,7 @@ const ChangeStateModal = ({isModalChangeStateOpen, setIsModalChangeStateOpen, or
     } catch (error: any) {
       messageApi.open({
         type: 'warning',
-        content: error.response.data.message,
+        content: error.response?.data?.message ?? 'Error al cambiar estado'
       });
     }
   }

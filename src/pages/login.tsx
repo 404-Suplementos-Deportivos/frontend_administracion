@@ -32,8 +32,7 @@ export default function Login() {
           dispatch(setToken(token as string))
           await dispatch(getProfileAsync())
         } catch (error: any) {
-          console.log(error.response.data.message)
-          messageApi.error(error.response.data.message)
+          messageApi.error(error.response?.data?.message ?? 'Error al obtener perfil')
         }
       }
       getProfile()
@@ -63,8 +62,7 @@ export default function Login() {
 
       dispatch(getProfileAsync())
     } catch (error: any) {
-      console.log(error.response.data.message)
-      messageApi.error(error.response.data.message)
+      messageApi.error(error.response?.data?.message ?? 'Error al iniciar sesión')
     } finally {
       formRef.current.resetFields()
       setLoading(false)

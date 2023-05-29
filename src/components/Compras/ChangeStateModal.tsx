@@ -55,7 +55,7 @@ const ChangeStateModal = ({isModalChangeStateOpen, setIsModalChangeStateOpen, no
     } catch (error: any) {
       messageApi.open({
         type: 'warning',
-        content: error.response.data.message,
+        content: error.response?.data?.message ?? 'Error al obtener estados'
       });
     }
   }
@@ -73,7 +73,7 @@ const ChangeStateModal = ({isModalChangeStateOpen, setIsModalChangeStateOpen, no
     } catch (error: any) {
       messageApi.open({
         type: 'warning',
-        content: error.response.data.message,
+        content: error.response?.data?.message ?? 'Error al actualizar estado'
       });
     }
   }

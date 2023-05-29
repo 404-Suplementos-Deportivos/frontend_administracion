@@ -60,7 +60,7 @@ const SubcategoriasModal = ({isModalSubcategoriesOpen, setIsModalSubcategoriesOp
     } catch (error: any) {
       messageApi.open({
         type: 'warning',
-        content: error.response.data.message,
+        content: error.response?.data?.message ?? 'Error al crear subcategoría',
       });
     }
   }
@@ -77,7 +77,7 @@ const SubcategoriasModal = ({isModalSubcategoriesOpen, setIsModalSubcategoriesOp
     } catch (error: any) {
       messageApi.open({
         type: 'warning',
-        content: error.response.data.message,
+        content: error.response?.data?.message ?? 'Error al actualizar subcategoría',
       });
     }
   }

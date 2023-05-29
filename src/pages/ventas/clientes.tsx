@@ -50,7 +50,7 @@ export default function Clientes() {
         messageApi.success(response.message)
         fetchClientes()
       } catch (error: any) {
-        messageApi.error(error.response.data.message)
+        messageApi.error(error.response?.data?.message ?? 'Ocurrió un error al cambiar el estado del cliente')
       }
     }, 1000)
   }

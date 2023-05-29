@@ -49,7 +49,7 @@ export default function List() {
     } catch (error: any) {
       console.log(error)
       messageApi.open({
-        content: error.response.data.message,
+        content: error.response?.data?.message ?? 'Error al obtener las notas de pedido',
         duration: 2,
         type: 'error'
       })
