@@ -8,6 +8,7 @@ interface ChangeStateModalProps {
   isModalChangeStateOpen: boolean;
   setIsModalChangeStateOpen: (isModalChangeStateOpen: boolean) => void;
   notaPedido: NotaPedido | null;
+  setNotaPedidoEdit: (notaPedido: NotaPedido | null) => void;
 }
 
 interface ChangeStateModalState {
@@ -33,7 +34,7 @@ const validateMessages = {
 };
 
 
-const ChangeStateModal = ({isModalChangeStateOpen, setIsModalChangeStateOpen, notaPedido}: ChangeStateModalProps) => {
+const ChangeStateModal = ({isModalChangeStateOpen, setIsModalChangeStateOpen, notaPedido, setNotaPedidoEdit}: ChangeStateModalProps) => {
   const [messageApi, contextHolder] = message.useMessage();
   const form = useRef<any>(null);
   const [estadosNP, setEstadosNP] = useState<ChangeStateModalState['estadosNP']>([]);
@@ -70,6 +71,7 @@ const ChangeStateModal = ({isModalChangeStateOpen, setIsModalChangeStateOpen, no
       form.current.resetFields();
       form.current = null
       setIsModalChangeStateOpen(false);
+      setNotaPedidoEdit(null);
     } catch (error: any) {
       messageApi.open({
         type: 'warning',
@@ -82,6 +84,7 @@ const ChangeStateModal = ({isModalChangeStateOpen, setIsModalChangeStateOpen, no
     form.current.resetFields();
     form.current = null
     setIsModalChangeStateOpen(false);
+    setNotaPedidoEdit(null);
   }
 
   return (

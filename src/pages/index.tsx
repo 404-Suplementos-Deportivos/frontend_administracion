@@ -48,6 +48,11 @@ export default function Home() {
   const [fechaHasta, setFechaHasta] = useState<HomeState['fechaHasta']>('')
 
   useEffect(() => {
+    obtenerStockMenorStockMinimo()
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+
+  useEffect(() => {
     Promise.all([
       obtenerUltimasVentas(),
       obtenerUltimosRegistrosMensuales(),
@@ -56,7 +61,6 @@ export default function Home() {
       obtenerProductosMasVendidos(),
       obtenerTiposUsuarios(),
       obtenerCategorias(),
-      obtenerStockMenorStockMinimo(),
     ])
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [fechaDesde, fechaHasta])

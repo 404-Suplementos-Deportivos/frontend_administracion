@@ -234,7 +234,7 @@ export default function List() {
             <Button type="primary" onClick={handleOpenModal}>Generar Nota de Pedido</Button>
           </div>
           <div>
-            <ListadoComprasFilter key={lastExpandedRowId} compras={notasPedido} comprasFiltered={notasPedidoFiltered} setComprasFiltered={setNotasPedidoFiltered} />
+            <ListadoComprasFilter compras={notasPedido} comprasFiltered={notasPedidoFiltered} setComprasFiltered={setNotasPedidoFiltered} />
             <Table columns={columns} dataSource={notasPedidoFiltered} onChange={handleChange} pagination={pagination} rowKey={'id'} expandable={{ 
               expandedRowRender: expandedRowRender,
               onExpand: (expanded, record) => {
@@ -264,6 +264,7 @@ export default function List() {
           isModalChangeStateOpen={isModalChangeStateOpen}
           setIsModalChangeStateOpen={setIsModalChangeStateOpen}
           notaPedido={notaPedidoEdit}
+          setNotaPedidoEdit={setNotaPedidoEdit} 
           key={notaPedidoEdit?.id}
         />
       }

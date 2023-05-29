@@ -39,6 +39,19 @@ interface NotaPedidoModalState {
   notaPedido: INotaPedidoAPI
 }
 
+const INITIAL_STATE: NotaPedidoModalState = {
+  proveedores: [],
+  productos: [],
+  selectedProveedorId: 0,
+  selectedTipoCompraId: 0,
+  selectedDate: dayjs().format('YYYY-MM-DD'),
+  notaPedido: {
+    fechaVencimiento: dayjs().format('YYYY-MM-DD'),
+    tipoCompraId: 1,
+    detalleNotaPedido: [],
+  },
+};
+
 interface SelectOption {
   value: string;
   label: string;
@@ -74,11 +87,7 @@ const NotaPedidoModal = ({isModalOpen, setIsModalOpen, notaPedidoEdit, setNotaPe
   const [selectedProveedorId, setSelectedProveedorId] = useState<NotaPedidoModalState['selectedProveedorId']>(0);
   const [selectedTipoCompraId, setSelectedTipoCompraId] = useState<NotaPedidoModalState['selectedTipoCompraId']>(0);
   const [selectedDate, setSelectedDate] = useState<NotaPedidoModalState['selectedDate']>(dayjs().format('YYYY-MM-DD'));
-  const [notaPedido, setNotaPedido] = useState<NotaPedidoModalState['notaPedido']>({
-    fechaVencimiento: dayjs().format('YYYY-MM-DD'),
-    tipoCompraId: 1,
-    detalleNotaPedido: [],
-  });
+  const [notaPedido, setNotaPedido] = useState<NotaPedidoModalState['notaPedido']>(INITIAL_STATE.notaPedido);
 
   const tipoCompra: SelectOption[] = [
     { value: "1", label: 'Local' },
@@ -278,6 +287,7 @@ const NotaPedidoModal = ({isModalOpen, setIsModalOpen, notaPedidoEdit, setNotaPe
     form.current.resetFields();
     form.current = null
     setNotaPedidoEdit(null);
+    setNotaPedido(INITIAL_STATE.notaPedido)
     setIsModalOpen(false);
   }
 

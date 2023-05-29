@@ -70,6 +70,7 @@ const CategoriasModal = ({isModalOpen, setIsModalOpen, categoryEdit, setCategory
         content: response.message,
       }).then(() => {
         setIsModalOpen(false);
+        setCategoryEdit(null);
       });
     } catch (error: any) {
       messageApi.open({

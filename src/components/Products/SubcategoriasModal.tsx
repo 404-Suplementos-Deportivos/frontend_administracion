@@ -73,6 +73,7 @@ const SubcategoriasModal = ({isModalSubcategoriesOpen, setIsModalSubcategoriesOp
         content: response.message,
       }).then(() => {
         setIsModalSubcategoriesOpen(false);
+        setSubcategoryEdit(null);
       });
     } catch (error: any) {
       messageApi.open({
