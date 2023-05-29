@@ -27,7 +27,6 @@ const CantidadVentasCategoriaChart = ({cantidadVentasCategoria, categoriaSelecte
 
   useEffect(() => {
     setCategoriaSelectedString(categorias.find( item => item.id === Number(categoriaSelected))?.nombre || '')
-    console.log( categoriaSelectedString )
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [categoriaSelected]);
 
@@ -36,7 +35,6 @@ const CantidadVentasCategoriaChart = ({cantidadVentasCategoria, categoriaSelecte
     setCategorias(response.data);
   };
 
-  // Tachar opcion seleccionada
   const options = {
     responsive: true,
     plugins: {
