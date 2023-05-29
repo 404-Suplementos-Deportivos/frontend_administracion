@@ -205,7 +205,7 @@ export default function Home() {
             gridColumn: '1 / 3',
             gridRow: '5 / 7',
           }}>
-            <CantidadVentasCategoriaChart cantidadVentasCategoria={cantidadVentasCategoria} />
+            <CantidadVentasCategoriaChart cantidadVentasCategoria={cantidadVentasCategoria} categoriaSelected={categoriaSelected} />
           </div>
           <div style={{
             gridColumn: '3 / 7',
