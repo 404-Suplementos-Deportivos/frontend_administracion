@@ -165,7 +165,7 @@ const ProveedoresModal = ({isModalOpen, setIsModalOpen, proveedorEdit, setProvee
             <Input allowClear placeholder='Ej. "Av. Siempreviva 742"' />
           </Form.Item>
           <Form.Item name="codigoPostal" label="Código Postal" rules={[{ required: true, type: 'number', min: 1000 }]}>
-            <InputNumber style={{ width: '100%' }} placeholder='Ej. "5000"' />
+            <InputNumber style={{ width: '100%' }} placeholder='Ej. "5000"' min={0} />
           </Form.Item>
           <Form.Item
             name="tipoIvaId"

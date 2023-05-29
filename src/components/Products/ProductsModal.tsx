@@ -237,13 +237,13 @@ const ProductsModal = ({productoEdit, setProductoEdit, isModalOpen, setIsModalOp
             />
           </Form.Item>
           <Form.Item name="precioLista" label="Precio de Lista" rules={[{ required: true, type: 'number', min: 0 }]}>
-            <InputNumber addonBefore="$" addonAfter={selectAfter} placeholder='Ej. "3500.50"' />
+            <InputNumber addonBefore="$" addonAfter={selectAfter} placeholder='Ej. "3500.50"' min={0} />
           </Form.Item>
           <Form.Item name="stock" label="Stock Disponible" rules={[{ required: true, type: 'number', min: 0, max: 1000 }]}>
-            <InputNumber placeholder='Ej. "25"' />
+            <InputNumber placeholder='Ej. "25"' min={0} />
           </Form.Item>
           <Form.Item name="stockMinimo" label="Stock Mínimo" rules={[{ required: true, type: 'number', min: 0, max: 1000 }]}>
-            <InputNumber  placeholder='Ej. "5"'/>
+            <InputNumber  placeholder='Ej. "5"' min={0} />
           </Form.Item>
           <Form.Item style={{ display: 'flex', justifyContent: 'flex-end' }}>
             <div style={{

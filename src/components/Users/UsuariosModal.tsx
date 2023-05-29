@@ -171,7 +171,7 @@ const UsuariosModal = ({isModalOpen, setIsModalOpen, usuarioEdit, setUsuarioEdit
             <Input />
           </Form.Item>
           <Form.Item name={['codigoPostal']} label="Código Postal" rules={[{ required:true, type: 'number', min: 0, max: 9999 }]}>
-            <InputNumber />
+            <InputNumber min={0} />
           </Form.Item>
           <Form.Item name={['telefono']} label="Teléfono">
             <Input />
