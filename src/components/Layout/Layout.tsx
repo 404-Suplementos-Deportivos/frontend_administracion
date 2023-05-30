@@ -127,7 +127,7 @@ const Layout = ({children, title, description=desc}: LayoutProps) => {
         <div>
           {productos.map((producto: any) => (
             <div key={producto.id}>
-              #{producto.id} {producto.nombre} - Stock: {producto.stock} Min.({producto.stock_minimo})
+              #{producto.id} {producto.nombre} - Stock: {producto.stock} Min. ({producto.stock_minimo})
             </div>
           ))}
         </div>
