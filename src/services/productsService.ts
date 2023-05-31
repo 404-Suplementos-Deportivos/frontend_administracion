@@ -1,15 +1,45 @@
 import axios from '@/libs/axios'
 import { Producto } from '@/interfaces/Producto'
 import { Categoria } from '@/interfaces/Categoria'
-import { Subategoria } from '@/interfaces/SubCategoria'
+import { SubCategoria } from '@/interfaces/SubCategoria'
 
 export const getCategories = async (): Promise<Categoria[]> => {
   const { data } = await axios.get('/products/categories')
   return data
 }
 
-export const getSubCategories = async (id: number): Promise<Subategoria[]> => {
+export const createCategory = async (category: Categoria) => {
+  const { data } = await axios.post('/products/categories', category)
+  return data
+}
+
+export const updateCategory = async (category: Categoria) => {
+  const { data } = await axios.put(`/products/categories/${category.id}`, {nombre: category.nombre, descripcion: category.descripcion})
+  return data
+}
+
+export const deleteCategory = async (id: number) => {
+  const { data } = await axios.delete(`/products/categories/${id}`)
+  return data
+}
+
+export const getSubCategories = async (id: number): Promise<SubCategoria[]> => {
   const { data } = await axios.get(`/products/subcategories/${id}`)
+  return data
+}
+
+export const createSubCategory = async (subCategory: SubCategoria) => {
+  const { data } = await axios.post('/products/subcategories', subCategory)
+  return data
+}
+
+export const updateSubCategory = async (subCategory: SubCategoria) => {
+  const { data } = await axios.put(`/products/subcategories/${subCategory.id}`, subCategory)
+  return data
+}
+
+export const deleteSubCategory = async (id: number) => {
+  const { data } = await axios.delete(`/products/subcategories/${id}`)
   return data
 }
 
@@ -25,5 +55,25 @@ export const getProduct = async (id: number): Promise<Producto> => {
 
 export const createProduct = async (product: Producto) => {
   const { data } = await axios.post('/products', product)
+  return data
+}
+
+export const updateProduct = async (product: Producto) => {
+  const { data } = await axios.put(`/products/${product.id}`, product)
+  return data
+}
+
+export const deleteProduct = async (id: number) => {
+  const { data } = await axios.delete(`/products/${id}`)
+  return data
+}
+
+export const getGanancias = async (): Promise<any> => {
+  const { data } = await axios.get('/products/profits')
+  return data
+}
+
+export const createGanancia = async (ganancia: any) => {
+  const { data } = await axios.post('/products/profits', ganancia)
   return data
 }

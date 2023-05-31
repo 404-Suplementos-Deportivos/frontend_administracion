@@ -347,3 +347,26 @@ template {
 [hidden] {
   display: none;
 }
+
+.fondo {
+  background: linear-gradient(to right, #225ea8, #1d6ba8, #0d86a8);
+  background-size: 200% 200%;
+  animation: gradient 10s ease infinite;
+}
+@keyframes gradient {
+  0% {
+    background-position: 0% 50%;
+  }
+  25% {
+    background-position: 100% 50%;
+  }
+  50% {
+    background-position: 0% 50%;
+  }
+  75% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
