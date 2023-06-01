@@ -197,24 +197,28 @@ export default function List() {
         dataIndex: 'cantidadPedida',
         render: (cantidadPedida) => cantidadPedida || '-',
         width: '20%',
+        align: 'right',
       },
       {
         title: 'Cantidad Recibida',
         dataIndex: 'cantidadRecibida',
         render: (cantidadRecibida) => cantidadRecibida || '-',
         width: '20%',
+        align: 'right',
       },
       {
         title: 'Precio',
         dataIndex: 'precio',
-        render: (precio) => `$${precio}` || '$-',
+        render: (precio) => `$${precio.toFixed(2)}` || '$-',
         width: '10%',
+        align: 'right',
       },
       {
         title: 'Descuento',
         dataIndex: 'descuento',
         render: (descuento) => `${descuento}%` || '-%',
         width: '10%',
+        align: 'right',
       }
     ];
     return <Table columns={columns} dataSource={detalles} pagination={false} rowKey={'id'} />;

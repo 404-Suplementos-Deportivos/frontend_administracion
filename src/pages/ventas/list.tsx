@@ -160,19 +160,22 @@ export default function List() {
         dataIndex: 'cantidad',
         render: (cantidad) => cantidad || '-',
         width: '20%',
+        align: 'right',
       },
       
       {
         title: 'Precio',
         dataIndex: 'precio',
-        render: (precio) => `$${precio}` || '$-',
+        render: (precio) => `$${precio.toFixed(2)}` || '$-',
         width: '20%',
+        align: 'right',
       },
       {
         title: 'Descuento',
         dataIndex: 'descuento',
         render: (descuento) => `${descuento}%` || '-',
         width: '20%',
+        align: 'right',
       },
     ];
     return <Table columns={columns} dataSource={detalles} pagination={false} rowKey={'id'} />;

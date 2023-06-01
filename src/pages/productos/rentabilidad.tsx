@@ -18,13 +18,6 @@ interface GananciasState {
 }
 
 const columns: ColumnsType<Ganancia> = [
-  // {
-  //   title: 'Código',
-  //   dataIndex: 'id',
-  //   sorter: (a, b) => (a?.id || 0) - (b?.id || 0),
-  //   render: (id) => id?.toString() || '',
-  //   width: '10%',
-  // },
   {
     title: 'Vigencia',
     dataIndex: 'vigencia',
@@ -34,7 +27,7 @@ const columns: ColumnsType<Ganancia> = [
   {
     title: 'Porcentaje',
     dataIndex: 'porcentaje',
-    render: (porcentaje) => `${porcentaje?.toString()}%` || '-',
+    render: (porcentaje) => `${porcentaje.toFixed(2)}%` || '-',
     width: '50%',
   },
 ];

@@ -34,7 +34,7 @@ export const options = {
     },
     title: {
       display: true,
-      text: 'Cantidad de registros por mes',
+      text: 'Cantidad de cuentas nuevas mensualmente',
     },
   },
 };
