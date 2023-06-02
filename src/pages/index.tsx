@@ -96,7 +96,7 @@ export default function Home() {
   const obtenerProductosMasVendidos = async () => {
     try {
       const response = await getMostSelledProducts({ fechaDesde, fechaHasta, tipoCategoria: Number(categoriaSelected) });
-      setMostSelledProducts(response.data)
+      setMostSelledProducts(response.data.sort((a: any, b: any) => b.cantidadVendida - a.cantidadVendida))
     } catch (error: any) {
       console.log( error.response?.data?.message ?? 'Error al obtener los productos más vendidos' )
     }

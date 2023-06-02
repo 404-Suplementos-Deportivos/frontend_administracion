@@ -35,7 +35,7 @@ const ListMostSelledProducts = ({mostSelledProducts}: ListMostSelledProductsProp
               alignItems: 'flex-start',
               gap: '8px',
               padding: '10px 20px',
-              flexBasis: '75%',  // El primer div ocupa 3/4 del espacio disponible
+              flexBasis: '75%',
               flexGrow: 1,    
             }}>
               <p style={{margin: '0'}}>Categoria: <span style={{fontWeight: 'normal'}}>{product.categoria}</span></p>
