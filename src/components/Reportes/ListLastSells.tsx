@@ -47,7 +47,7 @@ const ListLastSells = ({lastSells}: ListLastSellsProps) => {
               padding: '10px 20px',
             }}>
               <p style={{margin: '0'}}>{lastSell.usuario}</p>
-              <p style={{margin: '0'}}>${lastSell.total}</p>
+              <p style={{margin: '0'}}>${lastSell.total.toFixed(2)}</p>
             </div>
             <div style={{
               display: 'flex',

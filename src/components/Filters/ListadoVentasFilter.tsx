@@ -9,6 +9,7 @@ interface ListadoVentasFilterProps {
   ventas: Comprobante[] | undefined
   ventasFiltered: Comprobante[] | undefined
   setVentasFiltered: (ventas: Comprobante[]) => void
+  setData: (data: any) => void
 }
 
 interface ListadoVentasFilterState {
@@ -23,7 +24,7 @@ interface ListadoVentasFilterState {
 
 const { RangePicker } = DatePicker;
 
-const ListadoVentasFilter = ({ventas, ventasFiltered, setVentasFiltered}: ListadoVentasFilterProps) => {
+const ListadoVentasFilter = ({ventas, ventasFiltered, setVentasFiltered, setData}: ListadoVentasFilterProps) => {
   const [search, setSearch] = useState<ListadoVentasFilterState['search']>('')
   const [fechaDesde, setFechaDesde] = useState<ListadoVentasFilterState['fechaDesde']>('')
   const [fechaHasta, setFechaHasta] = useState<ListadoVentasFilterState['fechaHasta']>('')
@@ -65,6 +66,13 @@ const ListadoVentasFilter = ({ventas, ventasFiltered, setVentasFiltered}: Listad
         })
       }
       setVentasFiltered(ventasFiltradas)
+      setData({
+        fechaDesde: fechaDesde ? fechaDesde : '',
+        fechaHasta: fechaHasta ? fechaHasta : '',
+        fechaVencimientoDesde: fechaVencimientoDesde ? fechaVencimientoDesde : '',
+        fechaVencimientoHasta: fechaVencimientoHasta ? fechaVencimientoHasta : '',
+        estado: estado ? estadosComprobante.find(estadoComprobante => estadoComprobante.id === parseInt(estado))?.nombre : '',
+      })
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [ventas, search, fechaDesde, fechaHasta, fechaVencimientoDesde, fechaVencimientoHasta, estado])
