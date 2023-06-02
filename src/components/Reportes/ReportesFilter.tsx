@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react"
 import { DatePicker, Space } from 'antd';
 import dayjs from 'dayjs';
-import { TipoUsuario } from "@/interfaces/Reportes/TipoUsuario";
 import { Categoria } from "@/interfaces/Reportes/Categoria";
 
 interface ReportesFilterProps {
@@ -9,21 +8,16 @@ interface ReportesFilterProps {
   fechaHasta: string
   setFechaDesde: (fecha: string) => void
   setFechaHasta: (fecha: string) => void
-  tiposUsuario: TipoUsuario[]
   categorias: Categoria[]
-  setTipoUsuarioSelected: (tipoUsuario: string) => void
   setCategoriaSelected: (categoria: string) => void
 }
 
 const { RangePicker } = DatePicker;
 
-const ReportesFilter = ({fechaDesde, fechaHasta, setFechaDesde, setFechaHasta, tiposUsuario, categorias, setTipoUsuarioSelected, setCategoriaSelected}: ReportesFilterProps) => {
+const ReportesFilter = ({fechaDesde, fechaHasta, setFechaDesde, setFechaHasta, categorias, setCategoriaSelected}: ReportesFilterProps) => {
 
   const handleChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     switch (e.target.name) {
-      case 'tipoUsuario':
-        setTipoUsuarioSelected(e.target.value)
-        break;
       case 'tipoCategoria':
         setCategoriaSelected(e.target.value)
         break;
@@ -57,19 +51,6 @@ const ReportesFilter = ({fechaDesde, fechaHasta, setFechaDesde, setFechaHasta, t
         </div>
       </div>
       <div style={{display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: '10px'}}>
-        <div>
-          <span style={{marginRight: '0.5rem'}}>Tipo de usuario:</span>
-          <select
-            style={{width: '200px'}}
-            name="tipoUsuario"
-            onChange={handleChange}
-          >
-            <option value="0">Todos</option>
-            {tiposUsuario.map(tipoUsuario => (
-              <option key={tipoUsuario.id} value={tipoUsuario.id}>{tipoUsuario.nombre}</option>
-            ))}
-          </select>
-        </div>
         <div>
           <span style={{marginRight: '0.5rem'}}>Categoría:</span>
           <select

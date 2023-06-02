@@ -47,7 +47,7 @@ const RegistrosMensualesChart = ({registrosMensuales}: RegistrosMensualesChartPr
     labels: labels,
     datasets: [
       {
-        label: 'Registros',
+        label: 'Cuentas nuevas',
         data: registrosMensuales.map(registro => registro.cantidadUsuarios),
         fill: false,
         borderColor: '#111a2c',

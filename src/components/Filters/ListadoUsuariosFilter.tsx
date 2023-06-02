@@ -7,21 +7,21 @@ interface ListadoUsuariosFilterProps {
   usuarios: User[] | undefined
   usuariosFiltered: User[] | undefined
   setUsuariosFiltered: (usuarios: User[]) => void
+  rol: string
+  setRol: (rol: string) => void
 }
 
 interface ListadoUsuariosFilterState {
   search: string
   estado: boolean
   cuentaConfirmada: boolean
-  rol: string
   roles: Rol[] | undefined
 }
 
-const ListadoUsuariosFilter = ({usuarios, usuariosFiltered, setUsuariosFiltered}: ListadoUsuariosFilterProps) => {
+const ListadoUsuariosFilter = ({usuarios, usuariosFiltered, setUsuariosFiltered, rol, setRol}: ListadoUsuariosFilterProps) => {
   const [search, setSearch] = useState<ListadoUsuariosFilterState['search']>('')
   const [estado, setEstado] = useState<ListadoUsuariosFilterState['estado']>(true)
   const [cuentaConfirmada, setCuentaConfirmada] = useState<ListadoUsuariosFilterState['cuentaConfirmada']>(true)
-  const [rol, setRol] = useState<ListadoUsuariosFilterState['rol']>('')
   const [roles, setRoles] = useState<ListadoUsuariosFilterState['roles']>([])
 
   useEffect(() => {

@@ -12,9 +12,8 @@ import { RegistroMensual } from '@/interfaces/Reportes/RegistrosMensuales';
 import { Compra, Venta } from '@/interfaces/Reportes/ComprasVentasMensuales';
 import { CantidadVentasCategoria } from '@/interfaces/Reportes/CantidadVentasCategoria';
 import { MostSelledProducts } from '@/interfaces/Reportes/MostSelledProducts';
-import { TipoUsuario } from '@/interfaces/Reportes/TipoUsuario';
 import { Categoria } from '@/interfaces/Reportes/Categoria';
-import { getLastSells, getLastRegisterMensual, getLastSellsBuys, getCategorySells, getMostSelledProducts, getTiposUsuarios, getCategorias, getStockMenorStockMinimo } from '@/services/reportesService';
+import { getLastSells, getLastSellsBuys, getCategorySells, getMostSelledProducts, getCategorias, getStockMenorStockMinimo } from '@/services/reportesService';
 
 type NotificationType = 'success' | 'info' | 'warning' | 'error';
 interface HomeState {
@@ -24,9 +23,7 @@ interface HomeState {
   ventas: Venta[]
   cantidadVentasCategoria: CantidadVentasCategoria[]
   mostSelledProducts: MostSelledProducts[]
-  tiposUsuario: TipoUsuario[]
   categorias: Categoria[]
-  tipoUsuarioSelected: string
   categoriaSelected: string
   fechaDesde: string
   fechaHasta: string
@@ -40,9 +37,7 @@ export default function Home() {
   const [ventas, setVentas] = useState<HomeState['ventas']>([])
   const [cantidadVentasCategoria, setCantidadVentasCategoria] = useState<HomeState['cantidadVentasCategoria']>([])
   const [mostSelledProducts, setMostSelledProducts] = useState<HomeState['mostSelledProducts']>([])
-  const [tiposUsuario, setTiposUsuario] = useState<HomeState['tiposUsuario']>([])
   const [categorias, setCategorias] = useState<HomeState['categorias']>([])
-  const [tipoUsuarioSelected, setTipoUsuarioSelected] = useState<HomeState['tipoUsuarioSelected']>('0')
   const [categoriaSelected, setCategoriaSelected] = useState<HomeState['categoriaSelected']>('0')
   const [fechaDesde, setFechaDesde] = useState<HomeState['fechaDesde']>('')
   const [fechaHasta, setFechaHasta] = useState<HomeState['fechaHasta']>('')
@@ -55,11 +50,9 @@ export default function Home() {
   useEffect(() => {
     Promise.all([
       obtenerUltimasVentas(),
-      obtenerUltimosRegistrosMensuales(),
       obtenerComprasVentas(),
       obtenerCantidadVentasCategoria(),
       obtenerProductosMasVendidos(),
-      obtenerTiposUsuarios(),
       obtenerCategorias(),
     ])
   // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -67,11 +60,10 @@ export default function Home() {
 
   useEffect(() => {
     Promise.all([
-      obtenerUltimosRegistrosMensuales(),
       obtenerProductosMasVendidos(),
     ])
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [tipoUsuarioSelected, categoriaSelected])
+  }, [categoriaSelected])
 
   const obtenerUltimasVentas = async () => {
     try {
@@ -79,15 +71,6 @@ export default function Home() {
       setLastSells(response.data)
     } catch (error: any) {
       console.log( error.response?.data?.message ?? 'Error al obtener las últimas ventas' )
-    }
-  }
-
-  const obtenerUltimosRegistrosMensuales = async () => {
-    try {
-      const response = await getLastRegisterMensual({ fechaDesde, fechaHasta, tipoUsuario: Number(tipoUsuarioSelected)});
-      setRegistrosMensuales(response.data)
-    } catch (error: any) {
-      console.log( error.response?.data?.message ?? 'Error al obtener los últimos registros mensuales' )
     }
   }
 
@@ -116,15 +99,6 @@ export default function Home() {
       setMostSelledProducts(response.data)
     } catch (error: any) {
       console.log( error.response?.data?.message ?? 'Error al obtener los productos más vendidos' )
-    }
-  }
-
-  const obtenerTiposUsuarios = async () => {
-    try {
-      const response = await getTiposUsuarios();
-      setTiposUsuario(response.data)
-    } catch (error: any) {
-      console.log( error.response?.data?.message ?? 'Error al obtener los tipos de usuarios' )
     }
   }
 
@@ -177,9 +151,7 @@ export default function Home() {
           setFechaDesde={setFechaDesde}
           fechaHasta={fechaHasta}
           setFechaHasta={setFechaHasta}
-          tiposUsuario={tiposUsuario}
           categorias={categorias}
-          setTipoUsuarioSelected={setTipoUsuarioSelected}
           setCategoriaSelected={setCategoriaSelected}
         />
         <div style={{
@@ -200,20 +172,14 @@ export default function Home() {
             <ComprasVentasMensualesChart compras={compras} ventas={ventas} />
           </div>
           <div style={{
-            gridColumn: '1 / 7',
+            gridColumn: '1 / 5',
             gridRow: '3 / 5',
-          }}>
-            <RegistrosMensualesChart registrosMensuales={registrosMensuales} />
-          </div>
-          <div style={{
-            gridColumn: '1 / 3',
-            gridRow: '5 / 7',
           }}>
             <CantidadVentasCategoriaChart cantidadVentasCategoria={cantidadVentasCategoria} categoriaSelected={categoriaSelected} />
           </div>
           <div style={{
-            gridColumn: '3 / 7',
-            gridRow: '5 / 7',
+            gridColumn: '5 / 7',
+            gridRow: '3 / 5',
           }}>
             <ListMostSelledProducts mostSelledProducts={mostSelledProducts} />
           </div>
