@@ -83,7 +83,7 @@ const CantidadVentasCategoriaChart = ({cantidadVentasCategoria, categoriaSelecte
   }
 
   return (
-    <Bar options={options} data={data} height={'100%'} />
+    <Bar options={options} data={data} height={'100%'} width={'100%'}/>
   )
 }
 

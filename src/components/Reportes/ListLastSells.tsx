@@ -9,6 +9,7 @@ const ListLastSells = ({lastSells}: ListLastSellsProps) => {
   return (
     <div>
       <div style={{
+        width: '100%',
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',
@@ -22,6 +23,7 @@ const ListLastSells = ({lastSells}: ListLastSellsProps) => {
       <div>
         {lastSells.map((lastSell) => (
           <div key={lastSell.numero_factura} style={{
+            width: '100%',
             display: 'flex',
             flexDirection: 'row',
             justifyContent: 'space-between',
@@ -35,6 +37,7 @@ const ListLastSells = ({lastSells}: ListLastSellsProps) => {
               alignItems: 'flex-start',
               gap: '8px',
               padding: '10px 20px',
+              width: '100%',
             }}>
               <p style={{margin: '0'}}>#{lastSell.numero_factura}</p>
               <p style={{margin: '0'}}>{lastSell.fecha}</p>
@@ -45,6 +48,7 @@ const ListLastSells = ({lastSells}: ListLastSellsProps) => {
               alignItems: 'flex-start',
               gap: '8px',
               padding: '10px 20px',
+              width: '100%',
             }}>
               <p style={{margin: '0'}}>{lastSell.usuario}</p>
               <p style={{margin: '0'}}>${lastSell.total.toFixed(2)}</p>
@@ -55,6 +59,7 @@ const ListLastSells = ({lastSells}: ListLastSellsProps) => {
               alignItems: 'flex-end',
               gap: '8px',
               padding: '10px 20px',
+              width: '100%',
             }}>
               <p style={{margin: '0'}}>{lastSell.estado}</p>
             </div>
