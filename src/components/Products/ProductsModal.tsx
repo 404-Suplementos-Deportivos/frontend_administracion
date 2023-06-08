@@ -153,6 +153,7 @@ const ProductsModal = ({productoEdit, setProductoEdit, isModalOpen, setIsModalOp
         type: 'success',
         content: response.message,
       }).then(() => {
+        setProductoEdit(null);
         setIsModalOpen(false);
       });
     } catch (error: any) {
