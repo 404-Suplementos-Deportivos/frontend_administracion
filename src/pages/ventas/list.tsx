@@ -206,14 +206,14 @@ export default function List() {
           <h2 style={{marginTop: 0}}>Ordenes</h2>
           <div style={{display: 'flex', flexDirection: 'column', width: '100%'}}>
             <div style={{display: 'flex', justifyContent: 'flex-end', marginBottom: '20px', gap: '10px'}}>
-              {ordersFiltered?.length && (
+              {ordersFiltered?.length ? (
                 <PDFDownloadLink
                   document={<ListadoComprobantesPDF comprobantesFiltered={ordersFiltered} data={data} />}
                   fileName={`ListadoComprobantes.pdf`}
                 >
                   <Button type="primary">Imprimir Reporte</Button>
                 </PDFDownloadLink>
-              )}
+              ) : null}
             </div>
             <div>
               <ListadoVentasFilter ventas={orders} ventasFiltered={ordersFiltered} setVentasFiltered={setOrdersFiltered} setData={setData} />

@@ -251,14 +251,14 @@ export default function List() {
         <div style={{display: 'flex', flexDirection: 'column', width: '100%'}}>
           <div style={{display: 'flex', justifyContent: 'flex-end', marginBottom: '20px', gap: '10px'}}>
             <Button type="primary" onClick={handleOpenModal}>Generar Nota de Pedido</Button>
-            {notasPedidoFiltered?.length && (
+            {notasPedidoFiltered?.length ? (
               <PDFDownloadLink
                 document={<ListadoNotasPedidoPDF notasPedidoFiltered={notasPedidoFiltered} data={data} />}
                 fileName={`ListadoNotasPedido.pdf`}
               >
                 <Button type="primary">Imprimir Reporte</Button>
               </PDFDownloadLink>
-            )}
+            ) : null}
           </div>
           <div>
             <ListadoComprasFilter compras={notasPedido} comprasFiltered={notasPedidoFiltered} setComprasFiltered={setNotasPedidoFiltered} setData={setData} />
