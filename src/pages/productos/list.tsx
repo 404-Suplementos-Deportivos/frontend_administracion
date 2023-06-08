@@ -99,27 +99,30 @@ export default function ListProductos() {
     {
       title: 'Precio de Lista',
       dataIndex: 'precioLista',
-      render: (precioLista) => `$${precioLista?.toString()}` || '-',
+      render: (precioLista) => `$${precioLista.toFixed(2)}` || '-',
       width: '20%',
-      // width: '10%',
+      align: 'right',
     },
     {
       title: 'Precio de Venta',
       dataIndex: 'precioVenta',
-      render: (precioVenta) => `$${precioVenta?.toString()}` || '-',
+      render: (precioVenta) => `$${precioVenta.toFixed(2)}` || '-',
       width: '20%',
+      align: 'right',
     },
     {
       title: 'Stock Minimo',
       dataIndex: 'stockMinimo',
       render: (stockMinimo) => stockMinimo?.toString() || '-',
       width: '10%',
+      align: 'right',
     },
     {
       title: 'Stock Actual',
       dataIndex: 'stock',
       render: (stock) => stock?.toString() || '-',
       width: '10%',
+      align: 'right',
     },
     {
       title: 'Acciones',

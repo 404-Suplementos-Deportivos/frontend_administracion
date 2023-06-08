@@ -35,6 +35,8 @@ const ListMostSelledProducts = ({mostSelledProducts}: ListMostSelledProductsProp
               alignItems: 'flex-start',
               gap: '8px',
               padding: '10px 20px',
+              flexBasis: '75%',
+              flexGrow: 1,    
             }}>
               <p style={{margin: '0'}}>Categoria: <span style={{fontWeight: 'normal'}}>{product.categoria}</span></p>
               <p style={{margin: '0'}}>Producto: <span style={{fontWeight: 'normal'}}>{product.productoMasVendido ? product.productoMasVendido : '-'}</span></p>
@@ -45,6 +47,7 @@ const ListMostSelledProducts = ({mostSelledProducts}: ListMostSelledProductsProp
               alignItems: 'flex-start',
               gap: '8px',
               padding: '10px 20px',
+              flexBasis: '25%',
             }}>
               <p style={{margin: '0'}}>Cantidad vendida: <span style={{fontWeight: 'normal'}}>{product.cantidadVendida ? product.cantidadVendida : '-'}</span></p>
             </div>

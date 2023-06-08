@@ -7,12 +7,17 @@ import { CheckBadgeIcon, PencilSquareIcon, TrashIcon } from '@heroicons/react/24
 import Layout from "@/components/Layout/Layout"
 import UsuariosModal from "@/components/Users/UsuariosModal";
 import ListadoUsuariosFilter from "@/components/Filters/ListadoUsuariosFilter";
+import RegistrosMensualesChart from "@/components/Reportes/RegistrosMensualesChart";
 import { getUsers, deleteUser, confirmAccount } from "@/services/usersService";
+import { getLastRegisterMensual } from "@/services/reportesService";
+import { RegistroMensual } from "@/interfaces/Reportes/RegistrosMensuales";
 import { User } from "@/interfaces/User";
 
 interface UsersState {
   users: User[];
   usersFiltered: User[];
+  usersMensuales: RegistroMensual[];
+  rol: string;
   filteredInfo: Record<string, FilterValue | null>;
   sortedInfo: SorterResult<User>
   lastExpandedRowId: number | null | undefined,
@@ -24,6 +29,8 @@ export default function Users() {
   const [messageApi, contextHolder] = message.useMessage();
   const [users, setUsers] = useState<User[]>();
   const [usersFiltered, setUsersFiltered] = useState<UsersState['usersFiltered']>([]);
+  const [usersMensuales, setUsersMensuales] = useState<UsersState['usersMensuales']>([]);
+  const [rol, setRol] = useState<UsersState['rol']>('');
   const [filteredInfo, setFilteredInfo] = useState<UsersState['filteredInfo']>({});
   const [sortedInfo, setSortedInfo] = useState<UsersState['sortedInfo']>({});
   const [lastExpandedRowId, setLastExpandedRowId] = useState<UsersState['lastExpandedRowId']>(null);
@@ -35,10 +42,28 @@ export default function Users() {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isModalOpen])
 
+  useEffect(() => {
+    obtenerRegistrosMensuales()
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [rol])
+
   const fetchUsers = async () => {
     try {
       const response = await getUsers()
       setUsers(response)
+    } catch (error: any) {
+      messageApi.open({
+        content: 'Error al obtener datos',
+        duration: 2,
+        type: 'error'
+      })
+    }
+  }
+
+  const obtenerRegistrosMensuales = async () => {
+    try {
+      const response = await getLastRegisterMensual({fechaDesde: '', fechaHasta: '', tipoUsuario: Number(rol)})
+      setUsersMensuales(response.data)
     } catch (error: any) {
       messageApi.open({
         content: 'Error al obtener datos',
@@ -212,7 +237,10 @@ export default function Users() {
             <Button type="primary" onClick={handleOpenModal}>Nuevo Usuario</Button>
           </div>
           <div>
-            <ListadoUsuariosFilter usuarios={users} usuariosFiltered={usersFiltered} setUsuariosFiltered={setUsersFiltered} />
+            <div style={{marginBottom: '10px'}}>
+              <ListadoUsuariosFilter usuarios={users} usuariosFiltered={usersFiltered} setUsuariosFiltered={setUsersFiltered} rol={rol} setRol={setRol} />
+              <RegistrosMensualesChart registrosMensuales={usersMensuales} />
+            </div>
             <Table columns={columns} dataSource={usersFiltered} onChange={handleChange} pagination={pagination} rowKey={'id'} expandable={{ 
               expandedRowRender: expandedRowRender,
               onExpand: (expanded, record) => {

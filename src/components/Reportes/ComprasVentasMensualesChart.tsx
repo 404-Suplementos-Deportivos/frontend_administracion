@@ -37,6 +37,20 @@ export const options = {
       display: true,
       text: 'Montos mensuales de compras y ventas',
     },
+    tooltip: {
+      callbacks: {
+        label: function (context: any) {
+          let label = context.dataset.label || '';
+          if (label) {
+            label += ': ';
+          }
+          if (context.parsed.y !== null) {
+            label += new Intl.NumberFormat('es-AR', { style: 'currency', currency: 'ARS' }).format(context.parsed.y);
+          }
+          return label;
+        },
+      },
+    },
   },
 };
 

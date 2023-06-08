@@ -9,6 +9,7 @@ interface ListadoComprasFilterProps {
   compras: NotaPedido[] | undefined
   comprasFiltered: NotaPedido[] | undefined
   setComprasFiltered: (compras: NotaPedido[]) => void
+  setData: (data: any) => void
 }
 
 interface ListadoComprasFilterState {
@@ -29,7 +30,7 @@ interface SelectOption {
 
 const { RangePicker } = DatePicker;
 
-const ListadoComprasFilter = ({compras, comprasFiltered, setComprasFiltered}: ListadoComprasFilterProps) => {
+const ListadoComprasFilter = ({compras, comprasFiltered, setComprasFiltered, setData}: ListadoComprasFilterProps) => {
   const [search, setSearch] = useState<ListadoComprasFilterState['search']>('')
   const [fechaDesde, setFechaDesde] = useState<ListadoComprasFilterState['fechaDesde']>('')
   const [fechaHasta, setFechaHasta] = useState<ListadoComprasFilterState['fechaHasta']>('')
@@ -84,6 +85,14 @@ const ListadoComprasFilter = ({compras, comprasFiltered, setComprasFiltered}: Li
         })
       }
       setComprasFiltered(comprasFiltradas)
+      setData({
+        fechaDesde: fechaDesde ? fechaDesde : '',
+        fechaHasta: fechaHasta ? fechaHasta : '',
+        fechaVencimientoDesde: fechaVencimientoDesde ? fechaVencimientoDesde : '',
+        fechaVencimientoHasta: fechaVencimientoHasta ? fechaVencimientoHasta : '',
+        estado: estado ?  estadosNP.find(estadoNP => estadoNP.id === parseInt(estado))?.nombre : '',
+        tipoCompra: tipoCompra ? tiposCompra.find(tc => tc.value === tipoCompra)?.label : '',
+      })
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [compras, search, fechaDesde, fechaHasta, fechaVencimientoDesde, fechaVencimientoHasta, estado, tipoCompra])

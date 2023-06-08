@@ -34,7 +34,7 @@ export const options = {
     },
     title: {
       display: true,
-      text: 'Cantidad de registros por mes',
+      text: 'Cantidad de cuentas nuevas mensualmente',
     },
   },
 };
@@ -47,7 +47,7 @@ const RegistrosMensualesChart = ({registrosMensuales}: RegistrosMensualesChartPr
     labels: labels,
     datasets: [
       {
-        label: 'Registros',
+        label: 'Cuentas nuevas',
         data: registrosMensuales.map(registro => registro.cantidadUsuarios),
         fill: false,
         borderColor: '#111a2c',

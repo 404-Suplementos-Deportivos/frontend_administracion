@@ -13,6 +13,7 @@ import { getNotasPedido } from "@/services/comprasService";
 import { NotaPedido } from "@/interfaces/NotaPedido";
 import { DetalleNotaPedido } from "@/interfaces/DetalleNotaPedido";
 import NotaPedidoPDF from "@/utils/generateNotaPedidoPDF";
+import ListadoNotasPedidoPDF from "@/utils/generateListadoComprasPDF";
 
 interface ListNotasPedidoState {
   filteredInfo: Record<string, FilterValue | null>;
@@ -23,6 +24,14 @@ interface ListNotasPedidoState {
   notasPedido: NotaPedido[] | undefined;
   notasPedidoFiltered: NotaPedido[] | undefined;
   notaPedidoEdit: NotaPedido | null;
+  data: {
+    fechaDesde: string | null;
+    fechaHasta: string | null;
+    fechaVencimientoDesde: string | null;
+    fechaVencimientoHasta: string | null;
+    estado: string | null;
+    tipoCompra: string | null;
+  }
 }
 
 export default function List() {
@@ -30,6 +39,14 @@ export default function List() {
   const [notasPedido, setNotasPedido] = useState<ListNotasPedidoState['notasPedido']>();
   const [notasPedidoFiltered, setNotasPedidoFiltered] = useState<ListNotasPedidoState['notasPedidoFiltered']>([]);
   const [notaPedidoEdit, setNotaPedidoEdit] = useState<ListNotasPedidoState['notaPedidoEdit']>(null)
+  const [data, setData] = useState<ListNotasPedidoState['data']>({
+    fechaDesde: null,
+    fechaHasta: null,
+    fechaVencimientoDesde: null,
+    fechaVencimientoHasta: null,
+    estado: null,
+    tipoCompra: null,
+  })
 
   const [filteredInfo, setFilteredInfo] = useState<ListNotasPedidoState['filteredInfo']>({});
   const [sortedInfo, setSortedInfo] = useState<ListNotasPedidoState['sortedInfo']>({});
@@ -197,30 +214,32 @@ export default function List() {
         dataIndex: 'cantidadPedida',
         render: (cantidadPedida) => cantidadPedida || '-',
         width: '20%',
+        align: 'right',
       },
       {
         title: 'Cantidad Recibida',
         dataIndex: 'cantidadRecibida',
         render: (cantidadRecibida) => cantidadRecibida || '-',
         width: '20%',
+        align: 'right',
       },
       {
         title: 'Precio',
         dataIndex: 'precio',
-        render: (precio) => `$${precio}` || '$-',
+        render: (precio) => `$${precio.toFixed(2)}` || '$-',
         width: '10%',
+        align: 'right',
       },
       {
         title: 'Descuento',
         dataIndex: 'descuento',
         render: (descuento) => `${descuento}%` || '-%',
         width: '10%',
+        align: 'right',
       }
     ];
     return <Table columns={columns} dataSource={detalles} pagination={false} rowKey={'id'} />;
   };
-    
-
 
   return (
     <>
@@ -230,11 +249,19 @@ export default function List() {
         {contextHolder}
         <h2 style={{marginTop: 0}}>Compras</h2>
         <div style={{display: 'flex', flexDirection: 'column', width: '100%'}}>
-          <div style={{display: 'flex', justifyContent: 'flex-end', marginBottom: '20px'}}>
+          <div style={{display: 'flex', justifyContent: 'flex-end', marginBottom: '20px', gap: '10px'}}>
             <Button type="primary" onClick={handleOpenModal}>Generar Nota de Pedido</Button>
+            {notasPedidoFiltered?.length && (
+              <PDFDownloadLink
+                document={<ListadoNotasPedidoPDF notasPedidoFiltered={notasPedidoFiltered} data={data} />}
+                fileName={`ListadoNotasPedido.pdf`}
+              >
+                <Button type="primary">Imprimir Reporte</Button>
+              </PDFDownloadLink>
+            )}
           </div>
           <div>
-            <ListadoComprasFilter compras={notasPedido} comprasFiltered={notasPedidoFiltered} setComprasFiltered={setNotasPedidoFiltered} />
+            <ListadoComprasFilter compras={notasPedido} comprasFiltered={notasPedidoFiltered} setComprasFiltered={setNotasPedidoFiltered} setData={setData} />
             <Table columns={columns} dataSource={notasPedidoFiltered} onChange={handleChange} pagination={pagination} rowKey={'id'} expandable={{ 
               expandedRowRender: expandedRowRender,
               onExpand: (expanded, record) => {

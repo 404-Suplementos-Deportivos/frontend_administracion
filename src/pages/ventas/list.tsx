@@ -7,6 +7,7 @@ import { ArrowPathRoundedSquareIcon, ArrowDownTrayIcon } from '@heroicons/react/
 import Layout from "@/components/Layout/Layout"
 import ChangeStateModal from "@/components/Ventas/ChangeStateModal";
 import ListadoVentasFilter from "@/components/Filters/ListadoVentasFilter";
+import ListadoComprobantesPDF from "@/utils/generateListadoVentasPDF";
 import { getComprobantes, getEstados } from "@/services/ventasService"
 import { Comprobante } from "@/interfaces/Comprobante"
 import { DetalleComprobante } from "@/interfaces/DetalleComprobante";
@@ -23,6 +24,13 @@ interface ListOrdenesState {
   isModalOpen: boolean;
   isModalChangeStateOpen: boolean;
   orderEdit: Comprobante | null;
+  data: {
+    fechaDesde: string | null;
+    fechaHasta: string | null;
+    fechaVencimientoDesde: string | null;
+    fechaVencimientoHasta: string | null;
+    estado: string | null;
+  }
 }
 
 export default function List() {
@@ -30,6 +38,13 @@ export default function List() {
   const [orders, setOrders] = useState<ListOrdenesState['orders']>([])
   const [ordersFiltered, setOrdersFiltered] = useState<ListOrdenesState['ordersFiltered']>([])
   const [orderEdit, setOrderEdit] = useState<ListOrdenesState['orderEdit']>(null)
+  const [data, setData] = useState<ListOrdenesState['data']>({
+    fechaDesde: null,
+    fechaHasta: null,
+    fechaVencimientoDesde: null,
+    fechaVencimientoHasta: null,
+    estado: null,
+  })
   const [estados, setEstados] = useState<ListOrdenesState['estados']>([])
 
   const [filteredInfo, setFilteredInfo] = useState<ListOrdenesState['filteredInfo']>({});
@@ -160,19 +175,22 @@ export default function List() {
         dataIndex: 'cantidad',
         render: (cantidad) => cantidad || '-',
         width: '20%',
+        align: 'right',
       },
       
       {
         title: 'Precio',
         dataIndex: 'precio',
-        render: (precio) => `$${precio}` || '$-',
+        render: (precio) => `$${precio.toFixed(2)}` || '$-',
         width: '20%',
+        align: 'right',
       },
       {
         title: 'Descuento',
         dataIndex: 'descuento',
         render: (descuento) => `${descuento}%` || '-',
         width: '20%',
+        align: 'right',
       },
     ];
     return <Table columns={columns} dataSource={detalles} pagination={false} rowKey={'id'} />;
@@ -187,8 +205,18 @@ export default function List() {
           {contextHolder}
           <h2 style={{marginTop: 0}}>Ordenes</h2>
           <div style={{display: 'flex', flexDirection: 'column', width: '100%'}}>
+            <div style={{display: 'flex', justifyContent: 'flex-end', marginBottom: '20px', gap: '10px'}}>
+              {ordersFiltered?.length && (
+                <PDFDownloadLink
+                  document={<ListadoComprobantesPDF comprobantesFiltered={ordersFiltered} data={data} />}
+                  fileName={`ListadoComprobantes.pdf`}
+                >
+                  <Button type="primary">Imprimir Reporte</Button>
+                </PDFDownloadLink>
+              )}
+            </div>
             <div>
-              <ListadoVentasFilter ventas={orders} ventasFiltered={ordersFiltered} setVentasFiltered={setOrdersFiltered} />
+              <ListadoVentasFilter ventas={orders} ventasFiltered={ordersFiltered} setVentasFiltered={setOrdersFiltered} setData={setData} />
               <Table columns={columns} dataSource={ordersFiltered} onChange={handleChange} pagination={pagination} rowKey={'id'} expandable={{ 
                 expandedRowRender: expandedRowRender,
                 onExpand: (expanded, record) => {
